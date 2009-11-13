@@ -8,6 +8,13 @@ tree_settings = {
 "style" : wx.TR_DEFAULT_STYLE | wx.TR_EDIT_LABELS
 }
 
+files_categories = {
+"mvcontexts" : "Many-valued contexts",
+"scales" : "Scales",
+"contexts" : "Contexts",
+"concept_systems" : "Concept Systems"
+}
+
 class ProjectTree(wx.TreeCtrl):
     """Custom wx.TreeCtrl using as project inspector"""
     
@@ -17,23 +24,15 @@ class ProjectTree(wx.TreeCtrl):
     def set_project(self, project):
         self._project = project
         
-        self.root = self.tree.AddRoot(self.current_project.name)
-        if len(self.current_project.mvcontexts) != 0:
-            item = self.tree.AppendItem(self.root, "MV contexts")
-            for element in self.current_project.mvcontexts:
-                self.tree.AppendItem(item, element.name)
-        if len(self.current_project.scales) != 0:
-            item = self.tree.AppendItem(self.root, "Scales")
-            for element in self.current_project.scales:
-                self.tree.AppendItem(item, element.name)
-        if len(self.current_project.contexts) != 0:
-            item = self.tree.AppendItem(self.root, "Contexts")
-            for element in self.current_project.contexts:
-                self.tree.AppendItem(item, element.name)
-        if len(self.current_project.concept_systems) != 0:
-            item = self.tree.AppendItem(self.root, "Concept Systems")
-            for element in self.current_project.concept_systems:
-                self.tree.AppendItem(item, element.name)
+        self.DeleteAllItems()
+        self.root = self.AddRoot(self._project.name)
+        for category in files_categories.keys():
+            list_ = self._project.__getattribute__(category)
+            if len(list_) != 0:
+                item = self.AppendItem(self.root, files_categories[category])
+                for element in list_:
+                    self.AppendItem(item, element.name, data=wx.TreeItemData(element))
+        self.Expand(self.root)
         
 if __name__ == "__main__":
     app = wx.PySimpleApp()

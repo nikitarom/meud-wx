@@ -9,6 +9,7 @@ import wx.aui
 import fca
 
 import project
+import projecttree
 
 def MsgDlg(window, string, caption='meud', style=wx.YES_NO|wx.CANCEL):
     """Common MessageDialog."""
@@ -25,13 +26,7 @@ class MainFrame(wx.Frame):
         
         self.sp = wx.SplitterWindow(self)
         
-        #self.toolBar = self.CreateToolBar()
-        #self.openButton = wx.Button(self.toolBar, wx.NewId(), "Open")
-        #self.toolBar.AddControl(self.openButton)
-        #self.toolBar.Realize()
-        
-        self.tree = wx.TreeCtrl(self.sp, size=(200,-1),
-                                style=wx.TR_DEFAULT_STYLE | wx.TR_EDIT_LABELS)
+        self.tree = projecttree.ProjectTree(self.sp)
         
         self.nb = wx.aui.AuiNotebook(self.sp)
         
@@ -60,7 +55,7 @@ class MainFrame(wx.Frame):
         self.itemSaveProject.Enable(False)
         self.Bind(wx.EVT_MENU, self.OnProjectSave, self.itemSaveProject)
                 
-        item = menu.Append(wx.NewId(), "&Import...", "Add file to project")
+        item = menu.Append(wx.NewId(), "&Import...\tCtrl+I", "Add file to project")
         self.Bind(wx.EVT_MENU, self.OnImport, item)
         
         self.SetMenuBar(self.mainmenu)
@@ -83,27 +78,9 @@ class MainFrame(wx.Frame):
             self.current_project = project.load_project(project_dir)
             self.project_dir = project_dir
             
-            self.tree.DeleteAllItems()
             self.SetTitle(" - ".join(["meud", self.current_project.name]))
-            
-            self.root = self.tree.AddRoot(self.current_project.name)
-            if len(self.current_project.mvcontexts) != 0:
-                item = self.tree.AppendItem(self.root, "MV contexts")
-                for element in self.current_project.mvcontexts:
-                    self.tree.AppendItem(item, element.name)
-            if len(self.current_project.scales) != 0:
-                item = self.tree.AppendItem(self.root, "Scales")
-                for element in self.current_project.scales:
-                    self.tree.AppendItem(item, element.name)
-            if len(self.current_project.contexts) != 0:
-                item = self.tree.AppendItem(self.root, "Contexts")
-                for element in self.current_project.contexts:
-                    self.tree.AppendItem(item, element.name)
-            if len(self.current_project.concept_systems) != 0:
-                item = self.tree.AppendItem(self.root, "Concept Systems")
-                for element in self.current_project.concept_systems:
-                    self.tree.AppendItem(item, element.name)
-            
+            self.tree.set_project(self.current_project)
+
             self.projectdirty = False
             self.itemSaveProject.Enable(True)
         except IOError:
