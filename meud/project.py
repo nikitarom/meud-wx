@@ -60,6 +60,8 @@ class Project(object):
         
         self._name_indexes = {}
         
+        self.projectdirty = False
+        
     def add_element(self, new_element, name="default"):
         if name == "default":
             dname = default_names[new_element.__class__]
@@ -84,6 +86,16 @@ class Project(object):
         elif isinstance(new_element, fca.ConceptSystem):
             self._concept_systems.append(new_element)
             
+    def delete_element(self, element):
+        if isinstance(element, fca.Scale):
+            self._scales.remove(element)
+        elif isinstance(element, fca.Context):
+            self._contexts.remove(element)
+        elif isinstance(element, fca.ManyValuedContext):
+            self._mvcontexts.remove(element)
+        elif isinstance(element, fca.ConceptSystem):
+            self._concept_systems.remove(element)
+            
             
 def save_project(project_, path):
     """Save project to directory in path"""
@@ -92,6 +104,7 @@ def save_project(project_, path):
     except:
         pass
     output = open(os.path.join(path, "meud.project"), "wb")
+    project_.projectdirty = False
     cPickle.dump(project_, output)
     output.close()
    

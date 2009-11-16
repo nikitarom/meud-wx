@@ -1,15 +1,17 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """Main starting point for meud"""
 
 import os
 
 import wx
-import wx.aui
 
 import fca
 
 import project
 import projecttree
+
+from globals_ import files_categories
 
 def MsgDlg(window, string, caption='meud', style=wx.YES_NO|wx.CANCEL):
     """Common MessageDialog."""
@@ -21,28 +23,28 @@ def MsgDlg(window, string, caption='meud', style=wx.YES_NO|wx.CANCEL):
 class MainFrame(wx.Frame):
     
     def __init__(self, parent, title):
-        wx.Frame.__init__(self, parent=parent, id=-1, title=title)
-        self.SetupMenubar()
+        wx.Frame.__init__(self, parent=parent, id=-1, title=title, size=(800, -1))
+        self.CenterOnScreen()
         
         self.sp = wx.SplitterWindow(self)
         
         self.tree = projecttree.ProjectTree(self.sp)
         
-        self.nb = wx.aui.AuiNotebook(self.sp)
-        
         self.sp.SetMinimumPaneSize(10)
-        self.sp.SplitVertically(self.tree, self.nb, 10)
+        self.sp.SplitVertically(self.tree, self.tree.nb, 10)
         
         self.current_project = None
         self.project_dir = None
-        self.projectdirty = False
         self.root = None
+        
+        self.SetupMenubar()
         
     def SetupMenubar(self):
         """docstring for SetupMenubar"""
         self.mainmenu = wx.MenuBar()
+        # Project menu #
         menu = wx.Menu()
-        self.mainmenu.Append(menu, "&File")
+        self.mainmenu.Append(menu, "&Project")
         
         item = menu.Append(wx.NewId(), "&New Project...\tCtrl+N", "Create new project")
         self.Bind(wx.EVT_MENU, self.OnProjectNew, item)
@@ -54,16 +56,25 @@ class MainFrame(wx.Frame):
                                             "Save changes to project")
         self.itemSaveProject.Enable(False)
         self.Bind(wx.EVT_MENU, self.OnProjectSave, self.itemSaveProject)
-                
+        
+        # File menu #
+        menu = wx.Menu()
+        self.mainmenu.Append(menu, "&File")
+        
         item = menu.Append(wx.NewId(), "&Import...\tCtrl+I", "Add file to project")
         self.Bind(wx.EVT_MENU, self.OnImport, item)
+        
+        item = menu.Append(wx.NewId(), "&Remove\tCtrl+R", "Remove selected file from project")
+        self.Bind(wx.EVT_MENU, self.tree.OnFileRemove, item)
         
         self.SetMenuBar(self.mainmenu)
     
     def CheckProjectDirty(self):
         """Were the current project changed? If so, save it before."""
         open_it = True
-        if self.projectdirty:
+        if self.current_project == None:
+            return True
+        if self.current_project.projectdirty:
             # save the current project first.
             result = MsgDlg(self, "The project has been changed.  Save?")
             if result == wx.ID_YES:
@@ -79,9 +90,9 @@ class MainFrame(wx.Frame):
             self.project_dir = project_dir
             
             self.SetTitle(" - ".join(["meud", self.current_project.name]))
-            self.tree.set_project(self.current_project)
+            self.tree.set_project(self.current_project, self.project_dir)
 
-            self.projectdirty = False
+            self.current_project.projectdirty = False
             self.itemSaveProject.Enable(True)
         except IOError:
             pass
@@ -90,7 +101,6 @@ class MainFrame(wx.Frame):
         """Save a meud project"""
         try:
             project.save_project(self.current_project, self.project_dir)
-            self.projectdirty = False
         except IOError:
             MsgDlg(self, 'There was an error saving the new project file.', 'Error!', wx.OK)
         
@@ -125,16 +135,43 @@ class MainFrame(wx.Frame):
     
     def OnProjectSave(self, event):
         """Save a current meud project"""
-        if self.projectdirty:
+        if self.current_project.projectdirty:
             self.project_save()
     
     def OnImport(self, event):
         """Import scale, context or mvcontext to current project"""
-        dlg = wx.FileDialog(self, 'Choose a file to import.', '.', '', '*.cxt', wx.OPEN)
-        if dlg.ShowModal() == wx.ID_OK:
-            path = os.path.split(dlg.GetPath())
-            self.current_project.add_element(fca.Scale(fca.read_cxt(dlg.GetPath())))
-            self.project_save()
+        choices = files_categories.values()
+        dialog = wx.SingleChoiceDialog(self, "Choose a category of the file you trying to import",
+                                        "Choose a category", choices) 
+        if dialog.ShowModal() == wx.ID_OK:
+            category = dialog.GetStringSelection()
+            wildcard = "*.cxt files (*.cxt)|*.cxt|" \
+                        "Tab-separated files (*.txt)|*.txt|" \
+                        "All files (*.*)|*.*"
+            dlg = wx.FileDialog(self, 'Choose a file to import.', '.', '', wildcard,
+                                wx.OPEN)
+            if dlg.ShowModal() == wx.ID_OK:
+                path = dlg.GetPath()
+                ext = os.path.splitext(path)[1]
+                if category == "Scales" and ext==".cxt":
+                    new_element = fca.Scale(fca.read_cxt(path))
+                    self.current_project.add_element(new_element)
+                    self.tree.add_new_element("scales", new_element)
+                elif category == "Contexts":
+                    if ext==".cxt":
+                            new_element = fca.read_cxt(path)
+                    elif ext==".txt":
+                            new_element = fca.read_txt(path)
+                    self.current_project.add_element(new_element)
+                    self.tree.add_new_element("contexts", new_element)
+                elif category == "Many-valued contexts":
+                    new_element = fca.read_mv_txt(path)
+                    self.current_project.add_element(new_element)
+                    self.tree.add_new_element("mvcontexts", new_element)
+                else:
+                    MsgDlg(self, 'Not supported yet', 'Error!', wx.OK)
+                self.project_save()
+                
             
 
 class App(wx.App):
