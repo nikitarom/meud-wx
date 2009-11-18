@@ -10,6 +10,7 @@ import fca
 
 import project
 import projecttree
+from scalingdialog import ScalingDialog
 
 from globals_ import files_categories
 
@@ -66,6 +67,13 @@ class MainFrame(wx.Frame):
         
         item = menu.Append(wx.NewId(), "&Remove\tCtrl+R", "Remove selected file from project")
         self.Bind(wx.EVT_MENU, self.tree.OnFileRemove, item)
+        
+        # Scaling menu #
+        menu = wx.Menu()
+        self.mainmenu.Append(menu, "&Scaling")
+        
+        item = menu.Append(wx.NewId(), "Sca&le\tCtrl+l", "Scale current many-valued context")
+        self.Bind(wx.EVT_MENU, self.OnScaling, item)
         
         self.SetMenuBar(self.mainmenu)
     
@@ -168,12 +176,26 @@ class MainFrame(wx.Frame):
                     new_element = fca.read_mv_txt(path)
                     self.current_project.add_element(new_element)
                     self.tree.add_new_element("mvcontexts", new_element)
+                elif category == "Concept Systems":
+                    new_element = fca.read_xml(path)
+                    self.current_project.add_element(new_element)
+                    self.tree.add_new_element("concept_systems", new_element)
                 else:
                     MsgDlg(self, 'Not supported yet', 'Error!', wx.OK)
                 self.project_save()
                 
-            
-
+    def OnScaling(self, event):
+        item = self.tree.GetSelection()
+        data = self.tree.GetItemData(item).GetData()
+        if isinstance(data, fca.ManyValuedContext):
+            dlg = ScalingDialog(data, self.current_project.get_scales())
+            if dlg.ShowModal() == wx.ID_OK:
+                resulted_context = fca.scale_mvcontext(data, dlg.GetListOfScales())
+                dlg.Destroy()
+                self.current_project.add_element(resulted_context)
+                self.tree.add_new_element("contexts", resulted_context)
+                
+                
 class App(wx.App):
     
     def OnInit(self):
@@ -181,6 +203,7 @@ class App(wx.App):
         self.frame.Show()
         self.SetTopWindow(self.frame)
         return True
+
         
 def main():
     app = App(redirect=False)

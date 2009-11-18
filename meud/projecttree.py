@@ -6,8 +6,7 @@ import wx.aui
 
 import fca
 
-import project
-import contextgrid
+import project, contextgrid, conceptsystemgrid
 from globals_ import files_categories
 
 tree_settings = {
@@ -54,20 +53,38 @@ class ProjectTree(wx.TreeCtrl):
             # load the current selected file
             # self.SetItemBold(item, 1)
             element = self.GetItemData(item).GetData()
+            for i in range(self.nb.GetPageCount()):
+                if element == self.nb.GetPage(i).element:
+                    self.nb.SetSelection(i)
+                    return
             if isinstance(element, fca.Scale):
                 new_page = contextgrid.ContextGrid(self.nb)
+                new_page.Show(False)
                 new_page.SetTable(contextgrid.ContextTable(element))
                 self.nb.AddPage(new_page, element.name)
+                self.nb.SetSelection(self.nb.GetPageIndex(new_page))
                 self._project.projectdirty = True
             elif isinstance(element, fca.Context):
                 new_page = contextgrid.ContextGrid(self.nb)
+                new_page.Show(False)
                 new_page.SetTable(contextgrid.ContextTable(element))
                 self.nb.AddPage(new_page, element.name)
+                self.nb.SetSelection(self.nb.GetPageIndex(new_page))
                 self._project.projectdirty = True
             elif isinstance(element, fca.ManyValuedContext):
-                pass
+                new_page = contextgrid.MVContextGrid(self.nb)
+                new_page.Show(False)
+                new_page.SetTable(contextgrid.MVContextTable(element))
+                self.nb.AddPage(new_page, element.name)
+                self.nb.SetSelection(self.nb.GetPageIndex(new_page))
+                self._project.projectdirty = True
             elif isinstance(element, fca.ConceptSystem):
-                pass
+                new_page = conceptsystemgrid.ConceptSystemGrid(self.nb)
+                new_page.Show(False)
+                new_page.SetTable(conceptsystemgrid.ConceptSystemTable(element))
+                self.nb.AddPage(new_page, element.name)
+                self.nb.SetSelection(self.nb.GetPageIndex(new_page))
+                self._project.projectdirty = True
         else:
             pass
             
