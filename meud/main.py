@@ -194,6 +194,7 @@ class MainFrame(wx.Frame):
                 dlg.Destroy()
                 self.current_project.add_element(resulted_context)
                 self.tree.add_new_element("contexts", resulted_context)
+                self.current_project.projectdirty = True
                 
                 
 class App(wx.App):

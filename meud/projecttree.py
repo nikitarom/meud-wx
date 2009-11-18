@@ -22,6 +22,7 @@ class ProjectTree(wx.TreeCtrl):
         self.nb = wx.aui.AuiNotebook(parent) # Notebook control
         
         self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnTreeItemActivated)
+        self.Bind(wx.EVT_TREE_END_LABEL_EDIT, self.OnEndLabelEdit)
         
     def set_project(self, project, project_dir):
         self._project = project
@@ -95,6 +96,12 @@ class ProjectTree(wx.TreeCtrl):
             self.Delete(item)
             self._project.delete_element(self.GetItemData(item).GetData())
             project.save_project(self._project, self._project_dir)
+            
+    def OnEndLabelEdit(self, event):
+        """docstring for OnEndLabelEdit"""
+        item = event.GetItem()
+        self.GetItemData(item).GetData().name = event.GetLabel()
+        project.save_project(self._project, self._project_dir)
             
         
 if __name__ == "__main__":
