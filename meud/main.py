@@ -36,7 +36,6 @@ class MainFrame(wx.Frame):
         
         self.current_project = None
         self.project_dir = None
-        self.root = None
         
         self.SetupMenubar()
         
