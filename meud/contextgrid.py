@@ -1,10 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-import wx
 import wx.grid
-
-import fca
 
 class ContextTable(wx.grid.PyGridTableBase):
     
