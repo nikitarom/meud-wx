@@ -8,3 +8,5 @@ files_categories = {
 "concept_systems" : "Concept Systems"
 }
 
+workspace_path = r"../temp/workspace"
+

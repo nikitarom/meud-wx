@@ -1,7 +1,10 @@
-#Thu Jan 28 23:07:45 MSK 2010
+#Mon Feb 01 21:53:18 MSK 2010
 eclipse.preferences.version=1
 encoding//meud/conceptsystemgrid.py=utf-8
 encoding//meud/contextgrid.py=utf-8
+encoding//meud/globals_.py=utf-8
 encoding//meud/main.py=utf-8
+encoding//meud/project.py=utf-8
+encoding//meud/projectmodel.py=utf-8
 encoding//meud/projecttree.py=utf-8
 encoding/<project>=UTF-8

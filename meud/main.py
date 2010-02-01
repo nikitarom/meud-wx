@@ -24,7 +24,7 @@ def MsgDlg(window, string, caption='meud', style=wx.YES_NO|wx.CANCEL):
 class MainFrame(wx.Frame):
     
     def __init__(self, parent, title):
-        wx.Frame.__init__(self, parent=parent, id=-1, title=title, size=(800, -1))
+        wx.Frame.__init__(self, parent=parent, id=-1, title=title, size=(800, 600))
         self.CenterOnScreen()
         
         self.sp = wx.SplitterWindow(self)

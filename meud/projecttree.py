@@ -101,7 +101,7 @@ class ProjectTree(wx.TreeCtrl):
         item = event.GetItem()
         self.GetItemData(item).GetData().name = event.GetLabel()
         project.save_project(self._project, self._project_dir)
-            
+
         
 if __name__ == "__main__":
     app = wx.PySimpleApp()
