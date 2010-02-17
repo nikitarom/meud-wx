@@ -5,14 +5,18 @@
 import os
 
 import wx
+import wx.aui
 
 import fca
 
 import project
 import projecttree
+import workspaceview
+import workspacemodel
 from scalingdialog import ScalingDialog
+from tabsview import TabsView
 
-from globals_ import files_categories
+from globals_ import files_categories, DEBUG
 
 def MsgDlg(window, string, caption='meud', style=wx.YES_NO|wx.CANCEL):
     """Common MessageDialog."""
@@ -29,10 +33,14 @@ class MainFrame(wx.Frame):
         
         self.sp = wx.SplitterWindow(self)
         
-        self.tree = projecttree.ProjectTree(self.sp)
+        self.tree = workspaceview.WorkspaceView(self.sp)
+        if DEBUG:
+            self.tree.SetModel(workspacemodel.WorkspaceModel())
+        self.nb = TabsView(self.sp)
+        self.nb.SetModel(self.tree._model)
         
         self.sp.SetMinimumPaneSize(10)
-        self.sp.SplitVertically(self.tree, self.tree.nb, 10)
+        self.sp.SplitVertically(self.tree, self.nb, 10)
         
         self.current_project = None
         self.project_dir = None
@@ -43,19 +51,24 @@ class MainFrame(wx.Frame):
         """docstring for SetupMenubar"""
         self.mainmenu = wx.MenuBar()
         # Project menu #
+#        menu = wx.Menu()
+#        self.mainmenu.Append(menu, "&Project")
+#        
+#        item = menu.Append(wx.NewId(), "&New Project...\tCtrl+N", "Create new project")
+#        self.Bind(wx.EVT_MENU, self.OnProjectNew, item)
+#        
+#        item = menu.Append(wx.NewId(), "&Open Project...\tCtrl+O")
+#        self.Bind(wx.EVT_MENU, self.OnProjectOpen, item)
+#        
+#        self.itemSaveProject = menu.Append(wx.NewId(), "&Save Project",
+#                                            "Save changes to project")
+#        self.itemSaveProject.Enable(False)
+#        self.Bind(wx.EVT_MENU, self.OnProjectSave, self.itemSaveProject)
+        # File menu #
         menu = wx.Menu()
-        self.mainmenu.Append(menu, "&Project")
-        
-        item = menu.Append(wx.NewId(), "&New Project...\tCtrl+N", "Create new project")
-        self.Bind(wx.EVT_MENU, self.OnProjectNew, item)
-        
-        item = menu.Append(wx.NewId(), "&Open Project...\tCtrl+O")
-        self.Bind(wx.EVT_MENU, self.OnProjectOpen, item)
-        
-        self.itemSaveProject = menu.Append(wx.NewId(), "&Save Project",
-                                            "Save changes to project")
-        self.itemSaveProject.Enable(False)
-        self.Bind(wx.EVT_MENU, self.OnProjectSave, self.itemSaveProject)
+        self.mainmenu.Append(menu, "&Workspace")
+        item = menu.Append(wx.NewId(), "&Refresh...\tF5", "Refresh workspace")
+        self.Bind(wx.EVT_MENU, self.tree.OnRefresh, item)
         
         # File menu #
         menu = wx.Menu()
@@ -65,7 +78,7 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnImport, item)
         
         item = menu.Append(wx.NewId(), "&Remove\tCtrl+R", "Remove selected file from project")
-        self.Bind(wx.EVT_MENU, self.tree.OnFileRemove, item)
+#        self.Bind(wx.EVT_MENU, self.tree.OnFileRemove, item)
         
         # Scaling menu #
         menu = wx.Menu()

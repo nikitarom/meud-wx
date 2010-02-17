@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # encoding: utf-8
+DEBUG = True
 
 files_categories = {
 "mvcontexts" : "Many-valued contexts",
@@ -8,5 +9,5 @@ files_categories = {
 "concept_systems" : "Concept Systems"
 }
 
-workspace_path = r"../temp/workspace"
+workspace_path = r"workspace"
 
