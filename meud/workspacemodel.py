@@ -7,6 +7,8 @@ Created on 01.02.2010
 import os
 import os.path
 
+import wx
+
 from globals_ import workspace_path
 
 default_types = {".txt" : "Text",
@@ -19,6 +21,7 @@ class WorkspaceItem(object):
         self._path = path
         self.dir = dir
         self._children = []
+        self.ref = None
         
     def AddChild(self, item):
         if self.dir:
@@ -37,11 +40,10 @@ class WorkspaceModel(object):
             os.mkdir(workspace_path)
         self._path = os.path.abspath(workspace_path)
         
-        self._view = None
-        
         self._root = WorkspaceItem("Workspace", "")
         self._opened_files = []
         self._tabs_view = None
+        self._view = None
         
         self.Walk(self._root)
             
@@ -103,8 +105,22 @@ class WorkspaceModel(object):
         self._Retouch(self._root)
                 
     def OpenFile(self, item):
-        if not item.dir:
+        if not item.dir and not item in self._opened_files:
             self._opened_files.append(item)
+            # then we create new tab in the tabs view
+            if self._tabs_view:
+                newtab = wx.TextCtrl(self._tabs_view, -1,"", size=(200, 100), 
+                                     style=wx.TE_MULTILINE|wx.TE_READONLY)
+                newtab.SetFont(wx.Font(14, wx.FONTFAMILY_MODERN, wx.FONTSTYLE_NORMAL,
+                                       wx.FONTWEIGHT_NORMAL))
+                # TODO:
+                newtab.ref = item
+                
+                newtab.LoadFile(os.path.join(self._path, item._path))
+                self._tabs_view.AddPage(newtab, item._name, True)
+                
+    def CloseFile(self, item):
+        self._opened_files.remove(item)
                 
     def AddDir(self, path):
         """Assuming that path is already in workspace directory 
