@@ -33,6 +33,7 @@ class WorkspaceView(wx.TreeCtrl):
         self._il = il
         
         self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnTreeItemActivated)
+        self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
         
     def SetModel(self, model):
         self._model = model
@@ -68,6 +69,25 @@ class WorkspaceView(wx.TreeCtrl):
         if event:
             item = event.GetItem()
             self._model.OpenFile(self.GetPyData(item))
+            
+    def OnContextMenu(self, event):
+        active_treeitem_id = self.GetSelection()
+        active_item = self.GetPyData(active_treeitem_id)
+        if active_item.dir:
+            menu = wx.Menu()
+            menu_item = menu.Append(wx.NewId(), "tfidf")
+            self.Bind(wx.EVT_MENU, self.OnTFIDF, menu_item)
+            
+            self.PopupMenu(menu)
+            menu.Destroy()
+            
+    def OnTFIDF(self, event):
+        import nltktest as nl
+        active_treeitem_id = self.GetSelection()
+        active_item = self.GetPyData(active_treeitem_id)
+        path = active_item._path
+        nl.main(self._model.GetAbsPath(path))
+        self._model.Reload()
             
     def OnRefresh(self, event):
         self._model.Reload()

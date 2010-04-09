@@ -85,13 +85,13 @@ class WorkspaceModel(object):
             for path in new_paths:
                 abspath = os.path.join(self._path, path)
                 if os.path.isfile(abspath):
-                    newfile = WorkspaceItem(path, os.path.relpath(abspath, self._path),
+                    newfile = WorkspaceItem(os.path.basename(abspath), os.path.relpath(abspath, self._path),
                                              dir=False)
                     item.AddChild(newfile)
                     if self._view:
                         self._view.AddItem(item, newfile)
                 else:
-                    newdir = WorkspaceItem(path, os.path.relpath(abspath, self._path),
+                    newdir = WorkspaceItem(os.path.basename(abspath), os.path.relpath(abspath, self._path),
                                         dir=True)
                     item.AddChild(newdir)
                     if self._view:
@@ -103,6 +103,9 @@ class WorkspaceModel(object):
         
     def Reload(self):
         self._Retouch(self._root)
+        
+    def GetAbsPath(self, path):
+        return os.path.join(self._path, path)
                 
     def OpenFile(self, item):
         if not item.dir and not item in self._opened_files:
