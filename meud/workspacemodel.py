@@ -1,137 +1,111 @@
 """
-Created on 01.02.2010
-
-@author: jupp
+Workspace model
 """
-
-import os
 import os.path
-
-import wx
-
-from globals_ import workspace_path
-
-default_types = {".txt" : "Text",
-                 ".cxt" : "Context"}
+import shutil
+import cPickle
 
 class WorkspaceItem(object):
     
-    def __init__(self, name, path, dir=True):
-        self._name = name
-        self._path = path
+    def __init__(self, name, path, dir=True, parent=None):
+        self.name = name
+        self.path = path
         self.dir = dir
-        self._children = []
-        self.ref = None
+        self.children = []
+        self.parent = parent
+        if parent:
+            parent.AddChild(self)
+            
+    def __repr__(self):
+        return self.name
         
     def AddChild(self, item):
         if self.dir:
-            self._children.append(item)
+            self.children.append(item)
 
 class WorkspaceModel(object):
-    """
-    classdocs
-    """
-
-    def __init__(self):
-        """
-        Constructor
-        """
-        if not os.path.exists(workspace_path):
-            os.mkdir(workspace_path)
-        self._path = os.path.abspath(workspace_path)
-        
+    
+    def __init__(self, path):
+        """path is directory containing workspace"""
+        self._path = os.path.abspath(path)
+        self._metadatapath = os.path.join(self._path, ".metadata")
         self._root = WorkspaceItem("Workspace", "")
-        self._opened_files = []
-        self._tabs_view = None
-        self._view = None
         
-        self.Walk(self._root)
+        if not os.path.exists(path):
+            os.mkdir(self._path)
+            self._SetupNewEnvironment()
+        if not os.path.exists(self._metadatapath):
+            self._SetupNewEnvironment()
             
-    def Walk(self, root):  
-        path = os.path.join(self._path, root._path)
+        self.LoadWorkspace()
+    
+    def ImportFile(self, path, parent):
+        dst = os.path.join(self._path, parent.path)
+        shutil.copy(path, dst)
+        (head, tail) = os.path.split(path)
+        newpath = os.path.join(parent.path, tail)
+        newitem = WorkspaceItem(tail, newpath, False, parent)
+        self.SaveWorkspace()
+        return newitem
         
-        items = os.listdir(path)
+    def DeleteItem(self, item):
+        item.parent.children.remove(item)
+        del item
+        self.SaveWorkspace()
+    
+    def ImportDir(self, path, parent):
+        dst = os.path.join(self._path, parent.path)
+        (head, tail) = os.path.split(path)
+        newpath = os.path.join(dst, tail)
+        os.mkdir(newpath)
+        newitem = WorkspaceItem(tail, os.path.join(parent.path, tail), True, parent)
+        self._Walk(path, newitem)
+        self.SaveWorkspace()
+        return newitem
         
-        for item in items:
-            abspath = os.path.join(path, item)
+    def _Walk(self, srcpath, parentitem):
+        dst = os.path.join(self._path, parentitem.path)
+        
+        names = os.listdir(srcpath)
+        
+        for name in names:
+            abspath = os.path.join(srcpath, name)
             if os.path.isfile(abspath):
-                newfile = WorkspaceItem(item, os.path.relpath(abspath, self._path),
-                                             dir=False)
-                root.AddChild(newfile)
-                if self._view:
-                    self._view.AddItem(root, newfile)
+                shutil.copy(abspath, dst)
+                newfile = WorkspaceItem(name, os.path.join(parentitem.path, name),
+                                             False, parentitem)
             else:
-                newdir = WorkspaceItem(item, os.path.relpath(abspath, self._path),
-                                        dir=True)
-                root.AddChild(newdir)
-                if self._view:
-                    self._view.AddItem(root, newdir)
-                self.Walk(newdir)
+                os.mkdir(os.path.join(dst, name))
+                newdir = WorkspaceItem(name, os.path.join(parentitem.path, name),
+                                        True, parentitem)
+                self._Walk(abspath, newdir)
                 
-    def _Retouch(self, item):
-        """go through the tree and determine deleted and added elements"""
-        if not os.path.exists(os.path.join(self._path, item._path)):
-            if item.ref:
-                self._view.Delete(item.ref)
-            del item
-        elif item.dir:
-            path = os.path.join(self._path, item._path)
-            items = os.listdir(path)
-            existed_paths = [i._path for i in item._children]
-            current_paths = [os.path.join(item._path, path) for path in items]
-            
-            new_paths = set(current_paths) - set(existed_paths)
-            
-            for path in new_paths:
-                abspath = os.path.join(self._path, path)
-                if os.path.isfile(abspath):
-                    newfile = WorkspaceItem(os.path.basename(abspath), os.path.relpath(abspath, self._path),
-                                             dir=False)
-                    item.AddChild(newfile)
-                    if self._view:
-                        self._view.AddItem(item, newfile)
-                else:
-                    newdir = WorkspaceItem(os.path.basename(abspath), os.path.relpath(abspath, self._path),
-                                        dir=True)
-                    item.AddChild(newdir)
-                    if self._view:
-                        self._view.AddItem(item, newdir)
-                    self.Walk(newdir)
-            
-            for child in item._children:
-                self._Retouch(child)
+    def CheckPath(self, path, parent):
+        (head, tail) = os.path.split(path)
+        for child in parent.children:
+            if child.name == tail:
+                return False
+        return True
         
-    def Reload(self):
-        self._Retouch(self._root)
-        
-    def GetAbsPath(self, path):
-        return os.path.join(self._path, path)
-                
-    def OpenFile(self, item):
-        if not item.dir and not item in self._opened_files:
-            self._opened_files.append(item)
-            # then we create new tab in the tabs view
-            if self._tabs_view:
-                newtab = wx.TextCtrl(self._tabs_view, -1,"", size=(200, 100), 
-                                     style=wx.TE_MULTILINE|wx.TE_READONLY)
-                newtab.SetFont(wx.Font(14, wx.FONTFAMILY_MODERN, wx.FONTSTYLE_NORMAL,
-                                       wx.FONTWEIGHT_NORMAL))
-                # TODO:
-                newtab.ref = item
-                
-                newtab.LoadFile(os.path.join(self._path, item._path))
-                self._tabs_view.AddPage(newtab, item._name, True)
-                
-    def CloseFile(self, item):
-        self._opened_files.remove(item)
-                
-    def AddDir(self, path):
-        """Assuming that path is already in workspace directory 
-        and path is in relative form"""
+    def GetRoot(self):
         pass
     
-    def AddFile(self, path):
+    def GetParent(self, item):
         pass
+    
+    def GetChildren(self, item):
+        pass
+    
+    def _SetupNewEnvironment(self):
+        os.mkdir(self._metadatapath)
+        self.SaveWorkspace()
         
-if __name__ == "__main__":
-    wm = WorkspaceModel()
+    def SaveWorkspace(self):
+        output = open(os.path.join(self._metadatapath, "meud.data"), "wb")
+        cPickle.dump(self._root, output)
+        output.close()
+        
+    def LoadWorkspace(self):
+        input = open(os.path.join(self._metadatapath, "meud.data"), "rb")
+        self._root = cPickle.load(input)
+        input.close()

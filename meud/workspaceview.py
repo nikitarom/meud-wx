@@ -1,8 +1,7 @@
 """
-Created on 01.02.2010
-
-@author: jupp
+Workspace view
 """
+import os
 
 import wx
 
@@ -30,72 +29,125 @@ class WorkspaceView(wx.TreeCtrl):
         il.Add(wx.ArtProvider_GetBitmap(wx.ART_FILE_OPEN,   wx.ART_OTHER, isz))
         il.Add(wx.ArtProvider_GetBitmap(wx.ART_NORMAL_FILE, wx.ART_OTHER, isz))
         self.SetImageList(il)
-        self._il = il
+        self._imagelist = il
         
         self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnTreeItemActivated)
+        self.Bind(wx.EVT_RIGHT_DOWN, self.OnRightDown)
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
         
     def SetModel(self, model):
         self._model = model
-        self._model._view = self
         
-        model._root.ref = self.AddRoot(model._root._name)
-        self.SetPyData(model._root.ref, model._root)
+        new_tree_item = self.AddRoot(model._root.name)
+        self.SetPyData(new_tree_item, model._root)
         
-        self.SetItemImage(model._root.ref, 0, wx.TreeItemIcon_Normal)
-        self.SetItemImage(model._root.ref, 1, wx.TreeItemIcon_Expanded)
-        self.Walk(model._root)
+        self.SetItemImage(new_tree_item, 0, wx.TreeItemIcon_Normal)
+        self.SetItemImage(new_tree_item, 1, wx.TreeItemIcon_Expanded)
+        self.Walk(model._root, self.GetRootItem())
         
-        self.Expand(model._root.ref)
+        self.Expand(new_tree_item)
         
-    def GetModel(self):
-        return self._model
+    def SetTabsModel(self, tmodel):
+        self._tabsmodel = tmodel
         
-    def Walk(self, root):
-        for item in root._children:
-            self.AddItem(root, item)
-            self.Walk(item)
+    def Walk(self, parent, treeparent):
+        for item in parent.children:
+            treeitem = self.AddItem(treeparent, item)
+            self.Walk(item, treeitem)
             
-    def AddItem(self, root, item):
-        item.ref = self.AppendItem(root.ref, item._name)
-        self.SetPyData(item.ref, item)
+    def AddItem(self, parent, item):
+        new_tree_item = self.AppendItem(parent, item.name)
+        self.SetPyData(new_tree_item, item)
         if item.dir:
-            self.SetItemImage(item.ref, 0, wx.TreeItemIcon_Normal)
-            self.SetItemImage(item.ref, 1, wx.TreeItemIcon_Expanded)
+            self.SetItemImage(new_tree_item, 0, wx.TreeItemIcon_Normal)
+            self.SetItemImage(new_tree_item, 1, wx.TreeItemIcon_Expanded)
         else:
-            self.SetItemImage(item.ref, 2, wx.TreeItemIcon_Normal)
+            self.SetItemImage(new_tree_item, 2, wx.TreeItemIcon_Normal)
+        return new_tree_item
             
-    def OnTreeItemActivated(self, event):
-        if event:
-            item = event.GetItem()
-            self._model.OpenFile(self.GetPyData(item))
-            
+    def OnRightDown(self, event):
+        pt = event.GetPosition();
+        item, flags = self.HitTest(pt)
+        if item:
+            self.SelectItem(item)
+    
     def OnContextMenu(self, event):
         active_treeitem_id = self.GetSelection()
         active_item = self.GetPyData(active_treeitem_id)
-        if active_item.dir:
-            menu = wx.Menu()
-            menu_item = menu.Append(wx.NewId(), "tfidf")
-            self.Bind(wx.EVT_MENU, self.OnTFIDF, menu_item)
             
-            self.PopupMenu(menu)
-            menu.Destroy()
+        menu = wx.Menu()
             
-    def OnTFIDF(self, event):
-        import nltktest as nl
+        import_submenu = wx.Menu()
+        menu_item = import_submenu.Append(wx.NewId(), "File")
+        self.Bind(wx.EVT_MENU, self.OnImportFileClick, menu_item)
+            
+        menu_item = import_submenu.Append(wx.NewId(), "Dir")
+        self.Bind(wx.EVT_MENU, self.OnImportDirClick, menu_item)
+            
+        menu.AppendMenu(wx.NewId(), "Import", import_submenu)
+
+        menu_item = menu.Append(wx.NewId(), "Delete")
+        self.Bind(wx.EVT_MENU, self.OnDeleteClick, menu_item)
+            
+        self.PopupMenu(menu)
+        menu.Destroy()
+            
+    def OnImportFileClick(self, event): 
+        item = self.GetSelection()
+        parent = self.GetPyData(item)
+        if not parent.dir:
+            parent = parent.parent # omg
+            item = self.GetItemParent(item)
+        
+        dlg = wx.FileDialog(
+            self, message="Choose a file to import",
+            defaultDir=os.getcwd(), 
+            defaultFile="",
+            style=wx.OPEN | wx.CHANGE_DIR
+            )
+        
+        if dlg.ShowModal() == wx.ID_OK:
+            path = dlg.GetPath()
+            if self._model.CheckPath(path, parent):
+                newitem = self._model.ImportFile(path, parent)
+                self.AddItem(item, newitem)
+            
+        dlg.Destroy()
+        
+    def OnImportDirClick(self, event):
+        item = self.GetSelection()
+        parent = self.GetPyData(item)
+        if not parent.dir:
+            parent = parent.parent # omg
+            item = self.GetItemParent(item)
+        
+        dlg = wx.DirDialog(self, "Choose a directory to import:",
+                          style=wx.DD_DEFAULT_STYLE
+                                | wx.DD_DIR_MUST_EXIST,
+                          defaultPath=os.getcwd()
+                           )
+        
+        if dlg.ShowModal() == wx.ID_OK:
+            path = dlg.GetPath()
+            if self._model.CheckPath(path, parent):
+                newitem = self._model.ImportDir(path, parent)
+                new_tree_item = self.AddItem(item, newitem)
+                self.Walk(newitem, new_tree_item)
+            
+        dlg.Destroy()
+        
+    def OnDeleteClick(self, event):
         active_treeitem_id = self.GetSelection()
         active_item = self.GetPyData(active_treeitem_id)
-        path = active_item._path
-        nl.main(self._model.GetAbsPath(path))
-        self._model.Reload()
-            
-    def OnRefresh(self, event):
-        self._model.Reload()
         
-if __name__ == "__main__":
-    app = wx.PySimpleApp()
-    f = wx.Frame(None)
-    t = WorkspaceView(f)
-    t.SetModel(WorkspaceModel())
-    f.Show(True)
-    app.MainLoop()
+        self._model.DeleteItem(active_item)
+        
+        self.Delete(active_treeitem_id)
+    
+    def GetModel(self):
+        return self._model
+    
+    def OnTreeItemActivated(self, event):
+        if event:
+            item = event.GetItem()
+            self._tabsmodel.OpenFile(self.GetPyData(item))

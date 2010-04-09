@@ -23,7 +23,6 @@ class TabsView(wx.aui.AuiNotebook):
         model._tabs_view = self
         
     def OnNotebookPageClose(self, event):
-
         ctrl = event.GetEventObject()
         item = ctrl.GetPage(event.GetSelection()).ref
         self._model.CloseFile(item)

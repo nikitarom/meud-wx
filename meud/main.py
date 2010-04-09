@@ -3,6 +3,7 @@
 """Main starting point for meud"""
 
 import os
+import os.path
 
 import wx
 import wx.aui
@@ -11,10 +12,11 @@ import fca
 
 import workspaceview
 import workspacemodel
+import tabsmodel
 from scalingdialog import ScalingDialog
 from tabsview import TabsView
 
-from globals_ import files_categories, DEBUG
+from globals_ import files_categories, DEBUG, workspace_path
 
 def MsgDlg(window, string, caption='meud', style=wx.YES_NO|wx.CANCEL):
     """Common MessageDialog."""
@@ -25,7 +27,7 @@ def MsgDlg(window, string, caption='meud', style=wx.YES_NO|wx.CANCEL):
 
 class MainFrame(wx.Frame):
     
-    def __init__(self, parent, title):
+    def __init__(self, parent, title):   
         wx.Frame.__init__(self, parent=parent, id=-1, title=title, size=(800, 600))
         self.CenterOnScreen()
         
@@ -33,14 +35,17 @@ class MainFrame(wx.Frame):
         
         self.tree = workspaceview.WorkspaceView(self.sp)
         if DEBUG:
-            self.tree.SetModel(workspacemodel.WorkspaceModel())
+            self.tree.SetModel(workspacemodel.WorkspaceModel(workspace_path))
         self.nb = TabsView(self.sp)
-        self.nb.SetModel(self.tree._model)
+        tmodel = tabsmodel.TabsModel()
+        tmodel._path = workspace_path # !!!
+        self.nb.SetModel(tmodel)
+        self.tree.SetTabsModel(tmodel)
         
         self.sp.SetMinimumPaneSize(10)
         self.sp.SplitVertically(self.tree, self.nb, 10)
         
-        self.SetupMenubar()
+        #self.SetupMenubar()
         
     def SetupMenubar(self):
         """docstring for SetupMenubar"""
@@ -50,7 +55,7 @@ class MainFrame(wx.Frame):
         menu = wx.Menu()
         self.mainmenu.Append(menu, "&Workspace")
         item = menu.Append(wx.NewId(), "&Refresh...\tF5", "Refresh workspace")
-        self.Bind(wx.EVT_MENU, self.tree.OnRefresh, item)
+        # self.Bind(wx.EVT_MENU, self.tree.OnRefresh, item)
         
         # File menu #
         menu = wx.Menu()
