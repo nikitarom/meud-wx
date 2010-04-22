@@ -9,6 +9,7 @@ class TabsModel(object):
     
     def __init__(self):
         self._opened_files = []
+        self._path = ""
         
     def OpenFile(self, item):
         if not item.dir and not item in self._opened_files:
