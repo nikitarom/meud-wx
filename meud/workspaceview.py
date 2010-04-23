@@ -6,10 +6,12 @@ import os
 import wx
 
 from workspacemodel import WorkspaceModel
+from pluginsmanager import PluginsManager
+from typesmanager import TypesManager
 
 tree_settings = {
 "size" : (200, -1),
-"style" : wx.TR_DEFAULT_STYLE | wx.TR_EDIT_LABELS
+"style" : wx.TR_DEFAULT_STYLE | wx.TR_EDIT_LABELS | wx.TR_FULL_ROW_HIGHLIGHT
 }
 
 class WorkspaceView(wx.TreeCtrl):
@@ -22,7 +24,7 @@ class WorkspaceView(wx.TreeCtrl):
         Constructor
         """
         super(WorkspaceView, self).__init__(parent, **tree_settings)
-        
+
         isz = (16, 16)
         il = wx.ImageList(isz[0], isz[1])
         il.Add(wx.ArtProvider_GetBitmap(wx.ART_FOLDER,      wx.ART_OTHER, isz))
@@ -34,6 +36,8 @@ class WorkspaceView(wx.TreeCtrl):
         self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnTreeItemActivated)
         self.Bind(wx.EVT_RIGHT_DOWN, self.OnRightDown)
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
+        
+        self._pm = PluginsManager()
         
     def SetModel(self, model):
         self._model = model
@@ -85,9 +89,27 @@ class WorkspaceView(wx.TreeCtrl):
         self.Bind(wx.EVT_MENU, self.OnImportDirClick, menu_item)
             
         menu.AppendMenu(wx.NewId(), "Import", import_submenu)
-
-        menu_item = menu.Append(wx.NewId(), "Delete")
-        self.Bind(wx.EVT_MENU, self.OnDeleteClick, menu_item)
+        
+        if active_treeitem_id != self.RootItem:
+            menu_item = menu.Append(wx.NewId(), "Delete")
+            self.Bind(wx.EVT_MENU, self.OnDeleteClick, menu_item)
+            
+            plugins_submenu = self._pm.GetItemMenu(active_item, self)
+            menu.AppendMenu(wx.NewId(), "Plugins", plugins_submenu)
+            
+            types_submenu = wx.Menu()
+            
+            types = TypesManager.GetPossibleTypes(active_item)
+            for type in types:
+                menu_item = types_submenu.AppendRadioItem(wx.NewId(), type)
+                f = lambda event, item=active_item, type=type:\
+                    self._model.SetItemType(item, type)
+                self.Bind(wx.EVT_MENU, f, menu_item)
+                if active_item.type == type:
+                    menu_item.Check()
+                
+                
+            menu.AppendMenu(wx.NewId(), "Type", types_submenu)
             
         self.PopupMenu(menu)
         menu.Destroy()

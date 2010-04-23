@@ -10,4 +10,5 @@ files_categories = {
 }
 
 workspace_path = r"workspace"
+plugins_path = r"meud/plugins"
 

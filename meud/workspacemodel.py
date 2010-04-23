@@ -5,14 +5,19 @@ import os.path
 import shutil
 import cPickle
 
+from typesmanager import TypesManager
+
 class WorkspaceItem(object):
     
-    def __init__(self, name, path, dir=True, parent=None):
+    def __init__(self, name, path, dir=True, parent=None, type="Unknown"):
         self.name = name
         self.path = path
         self.dir = dir
         self.children = []
         self.parent = parent
+        if type == "Unknown":
+            type = TypesManager.GetDefaultType(path)
+        self.type = type
         if parent:
             parent.AddChild(self)
             
@@ -22,6 +27,9 @@ class WorkspaceItem(object):
     def AddChild(self, item):
         if self.dir:
             self.children.append(item)
+            
+    def SetType(self, type):
+        self.type = type
 
 class WorkspaceModel(object):
     
@@ -43,10 +51,14 @@ class WorkspaceModel(object):
         dst = os.path.join(self._path, parent.path)
         shutil.copy(path, dst)
         (head, tail) = os.path.split(path)
-        newpath = os.path.join(parent.path, tail)
+        # TODO
+        newpath = os.path.join(dst, tail)
         newitem = WorkspaceItem(tail, newpath, False, parent)
         self.SaveWorkspace()
         return newitem
+    
+    def SetItemType(self, item, type):
+        item.type = type
         
     def DeleteItem(self, item):
         item.parent.children.remove(item)
@@ -98,6 +110,9 @@ class WorkspaceModel(object):
     
     def _SetupNewEnvironment(self):
         os.mkdir(self._metadatapath)
+        self.SaveWorkspace()
+        
+    def __del__(self):
         self.SaveWorkspace()
         
     def SaveWorkspace(self):

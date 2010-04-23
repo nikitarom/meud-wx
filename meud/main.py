@@ -44,7 +44,7 @@ class MainFrame(wx.Frame):
         self.tree.SetTabsModel(tmodel)
         
         self.sp.SetMinimumPaneSize(10)
-        self.sp.SplitVertically(self.tree, self.nb, 10)
+        self.sp.SplitVertically(self.tree, self.nb, 200)
         
         #self.SetupMenubar()
         
