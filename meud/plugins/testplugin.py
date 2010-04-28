@@ -10,7 +10,12 @@ class TestPlugin(Plugin):
     
     def do_action(self, item, action):
         if action == "Who am I?":
-            dlg = wx.MessageDialog(None, "You are " + item.name,
+            msg = "You are {0}\n\
+                   Path: {1}\n\
+                   Parent: {2}\n\
+                   Dir: {3}\n\
+                   Type: {4}".format(item.name, item.path, item.parent, item.dir, item.type)
+            dlg = wx.MessageDialog(None, msg,
                                "Test",
                                wx.OK | wx.ICON_INFORMATION
                                )

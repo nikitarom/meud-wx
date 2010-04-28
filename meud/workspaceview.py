@@ -37,8 +37,6 @@ class WorkspaceView(wx.TreeCtrl):
         self.Bind(wx.EVT_RIGHT_DOWN, self.OnRightDown)
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
         
-        self._pm = PluginsManager()
-        
     def SetModel(self, model):
         self._model = model
         
@@ -50,6 +48,8 @@ class WorkspaceView(wx.TreeCtrl):
         self.Walk(model._root, self.GetRootItem())
         
         self.Expand(new_tree_item)
+        
+        self._pm = PluginsManager(self._model)
         
     def SetTabsModel(self, tmodel):
         self._tabsmodel = tmodel

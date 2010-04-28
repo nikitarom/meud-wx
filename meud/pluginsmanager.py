@@ -7,7 +7,9 @@ class PluginsManager(object):
     
     _plugins = []
     
-    def __init__(self):
+    def __init__(self, workspace):
+        self._workspace = workspace
+        
         superplugin = plugins._plugin.Plugin;
         for plugin in superplugin.__subclasses__():
             self._plugins.append(plugin())
@@ -33,4 +35,5 @@ class PluginsManager(object):
         return menu
             
     def OnActionClick(self, item, plugin, action):
-        plugin.do_action(item, action)
+        new_files = plugin.do_action(item, action)
+        self._workspace.AddFiles(new_files)

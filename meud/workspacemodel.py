@@ -37,7 +37,7 @@ class WorkspaceModel(object):
         """path is directory containing workspace"""
         self._path = os.path.abspath(path)
         self._metadatapath = os.path.join(self._path, ".metadata")
-        self._root = WorkspaceItem("Workspace", "")
+        self._root = WorkspaceItem("Workspace", self._path)
         
         if not os.path.exists(path):
             os.mkdir(self._path)
@@ -48,15 +48,48 @@ class WorkspaceModel(object):
         self.LoadWorkspace()
     
     def ImportFile(self, path, parent):
-        dst = os.path.join(self._path, parent.path)
-        shutil.copy(path, dst)
         (head, tail) = os.path.split(path)
-        # TODO
-        newpath = os.path.join(dst, tail)
-        newitem = WorkspaceItem(tail, newpath, False, parent)
-        self.SaveWorkspace()
+        dst = os.path.join(self._path, parent.path)
+        if path == os.path.join(dst, tail):
+            newitem = self.AddFile(path)
+            self.SaveWorkspace()
+        else:
+            shutil.copy(path, dst)
+            # TODO
+            newpath = os.path.join(dst, tail)
+            newitem = WorkspaceItem(tail, newpath, False, parent)
+            self.SaveWorkspace()
         return newitem
     
+    def AddFile(self, path):
+        (head, tail) = os.path.split(path)
+        is_dir = not os.path.isfile(path)
+        newitem = WorkspaceItem(tail, path, is_dir, self._GetParentItemByPath(head))
+        return newitem
+        
+    def AddFiles(self, paths):
+        if not paths:
+            return
+        
+        for path in paths:
+            self.AddFile(path)
+        self.SaveWorkspace()
+            
+    def _GetParentItemByPath(self, path):
+        
+        def Walk(item, path):
+            if item.path == path:
+                return item
+            else:
+                for c in item.children:
+                    item = Walk(c, path)
+                    if item:
+                        return item
+            return None
+        
+        return Walk(self._root, path)
+            
+            
     def SetItemType(self, item, type):
         item.type = type
         
