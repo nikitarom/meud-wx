@@ -174,7 +174,7 @@ class WorkspaceView(wx.TreeCtrl):
         active_treeitem_id = self.GetSelection()
         active_item = self.GetPyData(active_treeitem_id)
         
-        msg = "Are you sure to delete {0} from the file system".format(active_item.name)
+        msg = "Are you sure to delete '{0}' from the file system".format(active_item.name)
         dlg = wx.MessageDialog(self, msg,
                                "Delete resources",
                                wx.YES_NO | wx.ICON_INFORMATION
