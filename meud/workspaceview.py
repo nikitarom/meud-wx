@@ -39,6 +39,7 @@ class WorkspaceView(wx.TreeCtrl):
         
     def SetModel(self, model):
         self._model = model
+        model._view = self
         
         new_tree_item = self.AddRoot(model._root.name)
         self.SetPyData(new_tree_item, model._root)
@@ -50,6 +51,17 @@ class WorkspaceView(wx.TreeCtrl):
         self.Expand(new_tree_item)
         
         self._pm = PluginsManager(self._model)
+        
+    def ResetModel(self):
+        self.DeleteAllItems()
+        model = self._model
+        
+        new_tree_item = self.AddRoot(model._root.name)
+        self.SetItemImage(new_tree_item, 0, wx.TreeItemIcon_Normal)
+        self.SetItemImage(new_tree_item, 1, wx.TreeItemIcon_Expanded)
+        self.Walk(model._root, self.GetRootItem())
+        self.Expand(new_tree_item)
+         
         
     def SetTabsModel(self, tmodel):
         self._tabsmodel = tmodel
@@ -162,9 +174,18 @@ class WorkspaceView(wx.TreeCtrl):
         active_treeitem_id = self.GetSelection()
         active_item = self.GetPyData(active_treeitem_id)
         
-        self._model.DeleteItem(active_item)
+        msg = "Are you sure to delete {0} from the file system".format(active_item.name)
+        dlg = wx.MessageDialog(self, msg,
+                               "Delete resources",
+                               wx.YES_NO | wx.ICON_INFORMATION
+                               )
+        if dlg.ShowModal() == wx.ID_YES:
+            self._model.DeleteItem(active_item)
+            self.Delete(active_treeitem_id)
         
-        self.Delete(active_treeitem_id)
+        dlg.Destroy()
+        
+        
     
     def GetModel(self):
         return self._model

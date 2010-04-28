@@ -2,7 +2,7 @@ import os.path
 
 _possible_types = {
                    ".cxt" : ["Context", "Scale"],
-                   ".txt" : ["Text", "Context"],
+                   ".txt" : ["Text", "Context", "Many-valued context"],
                    ".xml" : ["Concepts"]
                    }
 

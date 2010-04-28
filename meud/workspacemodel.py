@@ -1,6 +1,7 @@
 """
 Workspace model
 """
+import os
 import os.path
 import shutil
 import cPickle
@@ -32,6 +33,7 @@ class WorkspaceItem(object):
         self.type = type
 
 class WorkspaceModel(object):
+    _view = None
     
     def __init__(self, path):
         """path is directory containing workspace"""
@@ -73,6 +75,7 @@ class WorkspaceModel(object):
         
         for path in paths:
             self.AddFile(path)
+        self._view.ResetModel()
         self.SaveWorkspace()
             
     def _GetParentItemByPath(self, path):
@@ -94,6 +97,11 @@ class WorkspaceModel(object):
         item.type = type
         
     def DeleteItem(self, item):
+        if item.dir:
+            shutil.rmtree(item.path)
+        else:
+            os.remove(item.path)
+            
         item.parent.children.remove(item)
         del item
         self.SaveWorkspace()
