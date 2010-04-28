@@ -6,6 +6,8 @@ import os.path
 import shutil
 import cPickle
 
+import wx
+
 from typesmanager import TypesManager
 
 class WorkspaceItem(object):
@@ -105,6 +107,28 @@ class WorkspaceModel(object):
         item.parent.children.remove(item)
         del item
         self.SaveWorkspace()
+        
+    def RenameItem(self, item, new_name):
+        if not new_name == item.name:
+            (head, tail) = os.path.split(item.path)
+            new_path = os.path.join(head, new_name)
+            
+            try:
+                os.rename(item.path, new_path)
+            except:
+                #TODO: Error handler
+                dlg = wx.MessageDialog(self._view.GetParent(), "Can't rename, invalid new name",
+                               "Error!",
+                               wx.OK | wx.ICON_INFORMATION
+                               )
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+            
+            item.name = new_name
+            item.path = new_path
+            self.SaveWorkspace()
+            return True
     
     def ImportDir(self, path, parent):
         dst = os.path.join(self._path, parent.path)

@@ -94,10 +94,10 @@ class WorkspaceView(wx.TreeCtrl):
         menu = wx.Menu()
             
         import_submenu = wx.Menu()
-        menu_item = import_submenu.Append(wx.NewId(), "File")
+        menu_item = import_submenu.Append(wx.NewId(), "File...")
         self.Bind(wx.EVT_MENU, self.OnImportFileClick, menu_item)
             
-        menu_item = import_submenu.Append(wx.NewId(), "Dir")
+        menu_item = import_submenu.Append(wx.NewId(), "Dir...")
         self.Bind(wx.EVT_MENU, self.OnImportDirClick, menu_item)
             
         menu.AppendMenu(wx.NewId(), "Import", import_submenu)
@@ -105,6 +105,9 @@ class WorkspaceView(wx.TreeCtrl):
         if active_treeitem_id != self.RootItem:
             menu_item = menu.Append(wx.NewId(), "Delete")
             self.Bind(wx.EVT_MENU, self.OnDeleteClick, menu_item)
+            
+            menu_item = menu.Append(wx.NewId(), "Rename...")
+            self.Bind(wx.EVT_MENU, self.OnRenameClick, menu_item)
             
             plugins_submenu = self._pm.GetItemMenu(active_item, self)
             menu.AppendMenu(wx.NewId(), "Plugins", plugins_submenu)
@@ -185,8 +188,23 @@ class WorkspaceView(wx.TreeCtrl):
         
         dlg.Destroy()
         
+    def OnRenameClick(self, event):
+        active_treeitem_id = self.GetSelection()
+        active_item = self.GetPyData(active_treeitem_id)
         
-    
+        dlg = wx.TextEntryDialog(
+                self.GetParent(), "New name:",
+                "Rename resource")
+
+        dlg.SetValue(active_item.name)
+
+        if dlg.ShowModal() == wx.ID_OK:
+            new_name = dlg.GetValue()
+            if self._model.RenameItem(active_item, new_name):
+                self.SetItemText(active_treeitem_id, new_name)
+        
+        dlg.Destroy()
+        
     def GetModel(self):
         return self._model
     
