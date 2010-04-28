@@ -3,7 +3,8 @@ import os.path
 _possible_types = {
                    ".cxt" : ["Context", "Scale"],
                    ".txt" : ["Text", "Context", "Many-valued context"],
-                   ".xml" : ["Concepts"]
+                   ".xml" : ["Concepts"],
+                   "" : ["Folder"]
                    }
 
 class TypesManager(object):

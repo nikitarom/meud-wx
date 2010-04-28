@@ -129,6 +129,24 @@ class WorkspaceModel(object):
             item.path = new_path
             self.SaveWorkspace()
             return True
+        
+    def NewDir(self, parent, new_dir):
+            new_path = os.path.join(parent.path, new_dir)
+            try:
+                os.mkdir(new_path)
+            except:
+                #TODO: Error handler
+                dlg = wx.MessageDialog(self._view.GetParent(), "Can't create new folder, invalid name",
+                               "Error!",
+                               wx.OK | wx.ICON_INFORMATION
+                               )
+                dlg.ShowModal()
+                dlg.Destroy()
+                return None
+            
+            new_item = WorkspaceItem(new_dir, new_path, True, parent)
+            self.SaveWorkspace()
+            return new_item
     
     def ImportDir(self, path, parent):
         dst = os.path.join(self._path, parent.path)

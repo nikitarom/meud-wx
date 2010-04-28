@@ -92,6 +92,12 @@ class WorkspaceView(wx.TreeCtrl):
         active_item = self.GetPyData(active_treeitem_id)
             
         menu = wx.Menu()
+        
+        New_submenu = wx.Menu()
+        menu_item = New_submenu.Append(wx.NewId(), "Folder")
+        self.Bind(wx.EVT_MENU, self.OnNewFolderClick, menu_item)
+        
+        menu.AppendMenu(wx.NewId(), "New", New_submenu)
             
         import_submenu = wx.Menu()
         menu_item = import_submenu.Append(wx.NewId(), "File...")
@@ -204,6 +210,25 @@ class WorkspaceView(wx.TreeCtrl):
                 self.SetItemText(active_treeitem_id, new_name)
         
         dlg.Destroy()
+        
+    def OnNewFolderClick(self, event):
+        active_treeitem_id = self.GetSelection()
+        active_item = self.GetPyData(active_treeitem_id)
+        
+        dlg = wx.TextEntryDialog(
+                self.GetParent(), "Enter name:",
+                "New folder")
+
+        dlg.SetValue("New folder")
+        
+        if dlg.ShowModal() == wx.ID_OK:
+            new_folder = dlg.GetValue()
+            new_item = self._model.NewDir(active_item, new_folder)
+            if new_item:
+                new_tree_item = self.AppendItem(active_treeitem_id, new_item.name)
+                self.SetPyData(new_tree_item, new_item)
+                self.SetItemImage(new_tree_item, 0, wx.TreeItemIcon_Normal)
+                self.SetItemImage(new_tree_item, 1, wx.TreeItemIcon_Expanded)
         
     def GetModel(self):
         return self._model
