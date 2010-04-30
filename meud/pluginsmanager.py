@@ -35,5 +35,5 @@ class PluginsManager(object):
         return menu
             
     def OnActionClick(self, item, plugin, action):
-        new_files = plugin.do_action(item, action)
+        new_files = plugin.do_action(item, self._workspace, action)
         self._workspace.AddFiles(new_files)

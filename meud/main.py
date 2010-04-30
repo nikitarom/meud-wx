@@ -13,7 +13,6 @@ import fca
 import workspaceview
 import workspacemodel
 import tabsmodel
-from scalingdialog import ScalingDialog
 from tabsview import TabsView
 
 from globals_ import files_categories, DEBUG, workspace_path

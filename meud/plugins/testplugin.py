@@ -8,7 +8,7 @@ class TestPlugin(Plugin):
     def get_actions(self, item):
         return ["Who am I?"]
     
-    def do_action(self, item, action):
+    def do_action(self, item, workspace, action):
         if action == "Who am I?":
             msg = "You are {0}\n\
                    Path: {1}\n\

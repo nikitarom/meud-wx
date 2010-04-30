@@ -22,7 +22,8 @@ class WorkspaceItem(object):
             type = TypesManager.GetDefaultType(path)
         self.type = type
         if parent:
-            parent.AddChild(self)
+            if not self in parent.children:
+                parent.AddChild(self)
             
     def __repr__(self):
         return self.name
@@ -74,7 +75,6 @@ class WorkspaceModel(object):
     def AddFiles(self, paths):
         if not paths:
             return
-        
         for path in paths:
             self.AddFile(path)
         self._view.ResetModel()
@@ -181,6 +181,22 @@ class WorkspaceModel(object):
             if child.name == tail:
                 return False
         return True
+    
+    def FilterType(self, type):
+        
+        def _Walk(item, fitem, type):
+            for child in item.children:
+                if child.type == type:
+                    WorkspaceItem(child.name, child.path, False, 
+                                                 parent=fitem, type=type)
+                elif child.dir:
+                    _Walk(child, WorkspaceItem(child.name, child.path, True, 
+                                                 parent=fitem), type)
+                    
+        
+        newroot = WorkspaceItem("Workspace", self._path)
+        _Walk(self._root, newroot, type)
+        return newroot
         
     def GetRoot(self):
         pass

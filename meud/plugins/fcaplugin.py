@@ -6,6 +6,7 @@ import wx
 import fca
 
 from _plugin import Plugin
+import _fcaplugin
 
 class FCAPlugin(Plugin):
     name = "FCA"
@@ -16,14 +17,14 @@ class FCAPlugin(Plugin):
         if item.type == "Many-valued context":
             return ["Scale"]
     
-    def do_action(self, item, action):
+    def do_action(self, item, workspace, action):
         if action == "Save concepts":
             return self.SaveConcepts(item)
         elif action == "Scale":
-            return self.ScaleMVContext(item)
+            return self.ScaleMVContext(item, workspace)
         
-    def ScaleMVContext(self, item):
-        mvcontext = fca.read_mv_txt(item.path)
+    def ScaleMVContext(self, item, workspace):
+        return _fcaplugin.GetScaledContext(item, workspace)
         
         
     def SaveConcepts(self, item):

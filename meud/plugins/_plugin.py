@@ -4,5 +4,5 @@ class Plugin(object):
     def get_actions(self, item):
         pass
     
-    def do_action(self, item, action):
+    def do_action(self, item, workspace, action):
         pass
