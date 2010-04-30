@@ -13,10 +13,18 @@ class FCAPlugin(Plugin):
     def get_actions(self, item):
         if item.type == "Context":
             return ["Save concepts"]
+        if item.type == "Many-valued context":
+            return ["Scale"]
     
     def do_action(self, item, action):
         if action == "Save concepts":
             return self.SaveConcepts(item)
+        elif action == "Scale":
+            return self.ScaleMVContext(item)
+        
+    def ScaleMVContext(self, item):
+        mvcontext = fca.read_mv_txt(item.path)
+        
         
     def SaveConcepts(self, item):
         (root, ext) = os.path.splitext(item.name)

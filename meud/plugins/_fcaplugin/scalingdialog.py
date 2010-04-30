@@ -23,13 +23,13 @@ class ScalingDialog(wx.Dialog):
         secondColLabel = wx.StaticText(panel, -1, "Assigned Attributes")
         thirdColLabel = wx.StaticText(panel, -1, "Remaining Attributes")
         
-        self.ScalesLb = wx.ListBox(panel, -1, size=(-1, 200), style=wx.LB_SINGLE,
+        self.ScalesLb = wx.ListBox(panel, -1, size=(-1, 200), style=wx.LB_SINGLE | wx.MAXIMIZE_BOX,
                                 choices=self.scales_names)
         self.Bind(wx.EVT_LISTBOX, self.OnScaleSelected, self.ScalesLb)
         self.ScalesLb.SetSelection(0)
         self.selected_scale = self.ScalesLb.GetStringSelection()
-        self.ScaledAttrLb = wx.ListBox(panel, -1, size=(-1, 200), style=wx.LB_MULTIPLE)
-        self.RemainAttrsLb = wx.ListBox(panel, -1, size=(-1, 200), style=wx.LB_MULTIPLE,
+        self.ScaledAttrLb = wx.ListBox(panel, -1, size=(-1, 200), style=wx.LB_MULTIPLE | wx.LB_EXTENDED | wx.MAXIMIZE_BOX)
+        self.RemainAttrsLb = wx.ListBox(panel, -1, size=(-1, 200), style=wx.LB_MULTIPLE | wx.LB_EXTENDED | wx.MAXIMIZE_BOX,
                                     choices=self.remain_attributes)
         
         rightArrowBtn = wx.Button(panel, wx.NewId(), "=>", size=(40, 20))

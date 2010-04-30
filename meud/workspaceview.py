@@ -11,7 +11,7 @@ from typesmanager import TypesManager
 
 tree_settings = {
 "size" : (200, -1),
-"style" : wx.TR_DEFAULT_STYLE | wx.TR_EDIT_LABELS | wx.TR_FULL_ROW_HIGHLIGHT
+"style" : wx.TR_DEFAULT_STYLE | wx.TR_FULL_ROW_HIGHLIGHT
 }
 
 class WorkspaceView(wx.TreeCtrl):
@@ -35,7 +35,9 @@ class WorkspaceView(wx.TreeCtrl):
         
         self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnTreeItemActivated)
         self.Bind(wx.EVT_RIGHT_DOWN, self.OnRightDown)
-        self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
+        # Works well on Windows, but fail on linux
+        # self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
+        self.Bind(wx.EVT_RIGHT_UP, self.OnContextMenu)
         
     def SetModel(self, model):
         self._model = model
