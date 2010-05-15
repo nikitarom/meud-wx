@@ -68,6 +68,22 @@ class WorkspaceView(wx.TreeCtrl):
     def SetTabsModel(self, tmodel):
         self._tabsmodel = tmodel
         
+    def AddNewItem(self, item):
+        
+        def _find_parent(tree_item, item):
+            if self.GetPyData(tree_item) == item:
+                return tree_item
+            else:
+                while True:
+                    child = self.GetNextSibling(tree_item)
+                    if type(child) == wx.TreeItemId:
+                        return _find_parent(child, item)
+                    else:
+                        break
+        
+        parent_tree_item = _find_parent(self.GetRootItem(), item.parent)
+        self.AddItem(parent_tree_item, item)
+    
     def Walk(self, parent, treeparent):
         for item in parent.children:
             treeitem = self.AddItem(treeparent, item)
@@ -216,6 +232,9 @@ class WorkspaceView(wx.TreeCtrl):
     def OnNewFolderClick(self, event):
         active_treeitem_id = self.GetSelection()
         active_item = self.GetPyData(active_treeitem_id)
+        if not active_item.dir:
+            active_item = active_item.parent
+            active_treeitem_id = self.GetItemParent(active_treeitem_id)
         
         dlg = wx.TextEntryDialog(
                 self.GetParent(), "Enter name:",

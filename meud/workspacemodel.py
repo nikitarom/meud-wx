@@ -71,6 +71,14 @@ class WorkspaceModel(object):
         is_dir = not os.path.isfile(path)
         newitem = WorkspaceItem(tail, path, is_dir, self._GetParentItemByPath(head))
         return newitem
+    
+    def AddFileFromPage(self, path, precessor):
+        (head, tail) = os.path.split(path)
+        newitem = WorkspaceItem(tail, path, precessor.dir, self._GetParentItemByPath(head),
+                                 type = precessor.type)
+        self._view.AddNewItem(newitem)
+        self.SaveWorkspace()
+        return newitem
         
     def AddFiles(self, paths):
         if not paths:
@@ -131,6 +139,8 @@ class WorkspaceModel(object):
             return True
         
     def NewDir(self, parent, new_dir):
+            if not parent.dir:
+                parent = parent.parent
             new_path = os.path.join(parent.path, new_dir)
             try:
                 os.mkdir(new_path)

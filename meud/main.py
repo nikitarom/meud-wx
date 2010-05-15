@@ -14,6 +14,7 @@ import workspaceview
 import workspacemodel
 import tabsmodel
 from tabsview import TabsView
+import images
 
 from globals_ import files_categories, DEBUG, workspace_path
 
@@ -30,6 +31,8 @@ class MainFrame(wx.Frame):
         wx.Frame.__init__(self, parent=parent, id=-1, title=title, size=(800, 600))
         self.CenterOnScreen()
         
+        images.initialize()
+        
         self.sp = wx.SplitterWindow(self)
         
         self.tree = workspaceview.WorkspaceView(self.sp)
@@ -37,7 +40,8 @@ class MainFrame(wx.Frame):
             w_path = os.path.abspath(workspace_path)
             self.tree.SetModel(workspacemodel.WorkspaceModel(w_path))
         self.nb = TabsView(self.sp)
-        tmodel = tabsmodel.TabsModel()
+        tmodel = tabsmodel.TabsModel(self.tree.GetModel())
+        # TODO:
         tmodel._path = w_path # !!!
         self.nb.SetModel(tmodel)
         self.tree.SetTabsModel(tmodel)
