@@ -20,6 +20,8 @@ class WorkspaceView(wx.TreeCtrl):
     """
     classdocs
     """
+    
+    _ids = {}
 
     def __init__(self, parent=None):
         """
@@ -78,19 +80,7 @@ class WorkspaceView(wx.TreeCtrl):
         self._tabsmodel = tmodel
         
     def AddNewItem(self, item):
-        
-        def _find_parent(tree_item, item):
-            if self.GetPyData(tree_item) == item:
-                return tree_item
-            else:
-                while True:
-                    child = self.GetNextSibling(tree_item)
-                    if type(child) == wx.TreeItemId:
-                        return _find_parent(child, item)
-                    else:
-                        break
-        
-        parent_tree_item = _find_parent(self.GetRootItem(), item.parent)
+        parent_tree_item = self._ids[item.parent]
         self.AddItem(parent_tree_item, item)
     
     def Walk(self, parent, treeparent):
@@ -100,6 +90,8 @@ class WorkspaceView(wx.TreeCtrl):
             
     def AddItem(self, parent, item):
         new_tree_item = self.AppendItem(parent, item.name)
+        self._ids[item] = new_tree_item
+        
         self.SetPyData(new_tree_item, item)
         if item.dir:
             self.SetItemImage(new_tree_item, self.type_image_index["Folder"][0], wx.TreeItemIcon_Normal)
@@ -312,6 +304,7 @@ class WorkspaceView(wx.TreeCtrl):
             new_item = self._model.NewDir(active_item, new_folder)
             if new_item:
                 new_tree_item = self.AppendItem(active_treeitem_id, new_item.name)
+                self._ids[new_item] = new_tree_item
                 self.SetPyData(new_tree_item, new_item)
                 self.SetItemImage(new_tree_item, self.type_image_index["Folder"][0], wx.TreeItemIcon_Normal)
                 self.SetItemImage(new_tree_item, self.type_image_index["Folder"][1], wx.TreeItemIcon_Expanded)

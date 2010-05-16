@@ -20,6 +20,7 @@ class WorkspaceItem(object):
         self.dir = dir
         self.children = []
         self.parent = parent
+        self.precessor = None
         if type == "Unknown":
             type = TypesManager.GetDefaultType(path)
         self.type = type
@@ -68,10 +69,12 @@ class WorkspaceModel(object):
             self.SaveWorkspace()
         return newitem
     
-    def AddFile(self, path):
+    def AddFile(self, path, precessor_item=None):
         (head, tail) = os.path.split(path)
         is_dir = not os.path.isfile(path)
         newitem = WorkspaceItem(tail, path, is_dir, self._GetParentItemByPath(head))
+        newitem.precessor = precessor_item
+        self._view.AddNewItem(newitem)
         return newitem
     
     def AddFileFromPage(self, path, precessor):
@@ -82,12 +85,11 @@ class WorkspaceModel(object):
         self.SaveWorkspace()
         return newitem
         
-    def AddFiles(self, paths):
+    def AddFiles(self, paths, precessor_item):
         if not paths:
             return
         for path in paths:
-            self.AddFile(path)
-        self._view.ResetModel()
+            self.AddFile(path, precessor_item)
         self.SaveWorkspace()
             
     def _GetParentItemByPath(self, path):

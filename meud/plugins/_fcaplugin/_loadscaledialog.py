@@ -1,7 +1,7 @@
 import wx
 
 tree_settings = {
-"size" : (200, -1),
+"size" : (200, 300),
 "style" : wx.TR_DEFAULT_STYLE | wx.TR_FULL_ROW_HIGHLIGHT
 }
 

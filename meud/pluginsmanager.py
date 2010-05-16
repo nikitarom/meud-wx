@@ -36,4 +36,4 @@ class PluginsManager(object):
             
     def OnActionClick(self, item, plugin, action):
         new_files = plugin.do_action(item, self._workspace, action)
-        self._workspace.AddFiles(new_files)
+        self._workspace.AddFiles(new_files, item)

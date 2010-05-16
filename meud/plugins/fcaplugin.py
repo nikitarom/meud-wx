@@ -4,6 +4,7 @@ import os.path
 import wx
 
 import fca
+import fca.algorithms.filtering as filtering
 
 from _plugin import Plugin
 import _fcaplugin
@@ -17,7 +18,7 @@ class FCAPlugin(Plugin):
         if item.type == "Many-valued context":
             return ["Scale"]
         if item.type == "Concepts":
-            return ["Filter", "Save diagram as .dot file"]
+            return ["Filter", "Save diagram as .dot file", "Compute index..."]
     
     def do_action(self, item, workspace, action):
         if action == "Save concepts":
@@ -25,10 +26,38 @@ class FCAPlugin(Plugin):
         elif action == "Scale":
             return self.ScaleMVContext(item, workspace)
         elif action == "Filter":
-            pass
+            return self.FilterConcepts(item, workspace)
         elif action == "Save diagram as .dot file":
             return self.SaveDiagramAsDotFile(item, workspace)
+        elif action == "Compute index...":
+            return self.ComputeIndex(item, workspace)
+            
+    def FilterConcepts(self, item, workspace):
+        return _fcaplugin.GetFilteredConcepts(item)
+    
+    def ComputeIndex(self, item, workspace):
+        cs = fca.read_xml(item.path)
+        functions = filtering.get_compute_functions()
         
+        dlg = wx.SingleChoiceDialog(
+                None, 'Choose index you want to compute', 'Choose index',
+                functions.keys(), 
+                wx.CHOICEDLG_STYLE
+                )
+
+        if dlg.ShowModal() == wx.ID_OK:
+            name = dlg.GetStringSelection()
+            
+            precessor = item.precessor
+            while not precessor.type == "Context":
+                precessor = precessor.precessor
+            cs.context = fca.read_cxt(precessor.path)
+            
+            fca.compute_index(cs, functions[name], name)
+            fca.write_xml(item.path, cs)
+                               
+        dlg.Destroy()
+    
     def SaveDiagramAsDotFile(self, item, workspace):
         default_path = "".join([item.path[:-3], "dot"])
         newpath = default_path

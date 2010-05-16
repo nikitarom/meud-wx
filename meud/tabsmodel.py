@@ -2,6 +2,9 @@
 Tabs Model
 """
 import wx
+from wx.lib.scrolledpanel import ScrolledPanel
+
+import fca
 
 import contextgrid
 
@@ -49,8 +52,21 @@ class TabsModel(object):
                     newtab.SetTable(contextgrid.MVContextTable(item, self))
                 elif item.type == "Image":
                     png = wx.Image(item.path, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
-                    newtab = wx.Panel(self._tabs_view, -1)
+                    newtab = ScrolledPanel(self._tabs_view, -1)
                     wx.StaticBitmap(newtab, -1, png, (10, 10), (png.GetWidth(), png.GetHeight()))
+                    newtab.SetScrollRate(20,20)
+                    newtab.SetVirtualSize((png.GetWidth() + 20, png.GetHeight() + 20))
+                elif item.type == "Concepts":
+                    newtab = wx.TextCtrl(self._tabs_view, -1, "", size=(200, 100), 
+                                     style=wx.TE_MULTILINE|wx.TE_READONLY|wx.TE_DONTWRAP)
+                    newtab.SetFont(wx.Font(9, wx.FONTFAMILY_MODERN, wx.FONTSTYLE_NORMAL,
+                                       wx.FONTWEIGHT_NORMAL))
+                    cs = fca.read_xml(item.path)
+                    for concept in cs:
+                        s = "[{0} : {1}] @ {2}\n".format(", ".join(concept.extent),
+                                                         ", ".join(concept.intent),
+                                                         concept.meta)
+                        newtab.WriteText(s)
                 else:
                     newtab = wx.TextCtrl(self._tabs_view, -1, "", size=(200, 100), 
                                      style=wx.TE_MULTILINE|wx.TE_READONLY)

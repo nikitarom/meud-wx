@@ -14,7 +14,9 @@ class TestPlugin(Plugin):
                    Path: {1}\n\
                    Parent: {2}\n\
                    Dir: {3}\n\
-                   Type: {4}".format(item.name, item.path, item.parent, item.dir, item.type)
+                   Type: {4}\n\
+                   Precessor type: {5}".format(item.name, item.path, item.parent, item.dir, item.type,
+                                               item.precessor.type)
             dlg = wx.MessageDialog(None, msg,
                                "Test",
                                wx.OK | wx.ICON_INFORMATION
