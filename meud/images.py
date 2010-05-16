@@ -7,16 +7,26 @@ Contains image handlers
 import wx
 
 icons = {
-"New" : "img/document-new.png",
-"Open" : "img/document-open.png",
-"Save" : "img/document-save.png",
-"SaveAs" : "img/document-save-as.png",
-"Random" : "img/emblem-important.png",
-"Apply" : "img/applications-system.png",
-"AddRow" : "img/go-bottom.png" ,
-"AddColumn" : "img/go-last.png",
-"DeleteRow" : "img/go-next.png",
-"DeleteColumn" : "img/go-down.png"
+"New" : "img/tango/document-new.png",
+"Open" : "img/tango/document-open.png",
+"Save" : "img/tango/document-save.png",
+"SaveAs" : "img/tango/document-save-as.png",
+"Random" : "img/tango/emblem-important.png",
+"Apply" : "img/tango/applications-system.png",
+"AddRow" : "img/tango/go-bottom.png" ,
+"AddColumn" : "img/tango/go-last.png",
+"DeleteRow" : "img/tango/go-next.png",
+"DeleteColumn" : "img/tango/go-down.png",
+"AppIcon" : "img/fugue/application-sidebar-list.png",
+"Context" : "img/fugue/document-attribute-c.png",
+"MVContext" : "img/fugue/document-attribute-m.png",
+"Scale" : "img/fugue/document-attribute-s.png",
+"ConceptLattice" : "img/fugue/document-attribute-l.png",
+"Text" : "img/fugue/document-text.png",
+"HDir" : "img/fugue/folder-horizontal.png",
+"OpenHDir" : "img/fugue/folder-horizontal-open.png",
+"Image" : "img/fugue/document-image.png",
+"Unknown" : "img/fugue/document.png"
 }
 
 bitmaps = {}

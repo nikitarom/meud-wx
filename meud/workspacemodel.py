@@ -8,6 +8,8 @@ import cPickle
 
 import wx
 
+import fca
+
 from typesmanager import TypesManager
 
 class WorkspaceItem(object):
@@ -157,7 +159,55 @@ class WorkspaceModel(object):
             new_item = WorkspaceItem(new_dir, new_path, True, parent)
             self.SaveWorkspace()
             return new_item
+        
+    def NewContext(self, parent, name):
+        
+        def _Error(message):
+            dlg = wx.MessageDialog(self._view.GetParent(), message,
+                            "Error!",
+                            wx.OK | wx.ICON_INFORMATION
+                            )
+            dlg.ShowModal()
+            dlg.Destroy()
+            return None
+        
+        if name in [child.name for child in parent.children]:
+            return _Error("Can't create new context, file '{0}' already exists".format(name))
+        new_path = os.path.join(parent.path, name)
+        try:
+            fca.write_cxt(fca.Context(), new_path)
+        except:
+            #TODO: Error handler
+            return _Error("Can't create new context, something wrong")
+            
+        new_item = WorkspaceItem(name, new_path, False, parent)
+        self.SaveWorkspace()
+        return new_item
     
+    def NewMVContext(self, parent, name):
+        
+        def _Error(message):
+            dlg = wx.MessageDialog(self._view.GetParent(), message,
+                            "Error!",
+                            wx.OK | wx.ICON_INFORMATION
+                            )
+            dlg.ShowModal()
+            dlg.Destroy()
+            return None
+        
+        if name in [child.name for child in parent.children]:
+            return _Error("Can't create new many-valued context, file '{0}' already exists".format(name))
+        new_path = os.path.join(parent.path, name)
+        try:
+            fca.write_mv_txt(fca.ManyValuedContext(), new_path)
+        except:
+            #TODO: Error handler
+            return _Error("Can't create new many-valued context, something wrong")
+            
+        new_item = WorkspaceItem(name, new_path, False, parent, type="Many-valued context")
+        self.SaveWorkspace()
+        return new_item
+            
     def ImportDir(self, path, parent):
         dst = os.path.join(self._path, parent.path)
         (head, tail) = os.path.split(path)

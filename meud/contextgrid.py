@@ -322,20 +322,20 @@ class ContextGrid(wx.Panel):
         
         tb.AddSeparator()
         
-        tool = tb.AddLabelTool(wx.NewId(), "Add Object", images.GetIcon("AddRow"),
+        tool = tb.AddLabelTool(wx.NewId(), "Add Object", images.GetBitmap("AddRow"),
                 shortHelp="Add object")
         self.Bind(wx.EVT_TOOL, self.OnAddRow, tool)
         
-        tool = tb.AddLabelTool(wx.NewId(), "Add Attribute", images.GetIcon("AddColumn"),
+        tool = tb.AddLabelTool(wx.NewId(), "Add Attribute", images.GetBitmap("AddColumn"),
                 shortHelp="Add Attribute")
         self.Bind(wx.EVT_TOOL, self.OnAddColumn, tool)
         
         tool = tb.AddLabelTool(wx.NewId(), "Delete Object",
-         images.GetIcon("DeleteRow"), shortHelp="Delete Object")
+         images.GetBitmap("DeleteRow"), shortHelp="Delete Object")
         self.Bind(wx.EVT_TOOL, self.OnDeleteRow, tool)
         
         tool = tb.AddLabelTool(wx.NewId(), "Delete Attribute",
-         images.GetIcon("DeleteColumn"), shortHelp="Delete Attribute")
+         images.GetBitmap("DeleteColumn"), shortHelp="Delete Attribute")
         self.Bind(wx.EVT_TOOL, self.OnDeleteColumn, tool)
         
         return tb

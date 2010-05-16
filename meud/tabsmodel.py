@@ -47,6 +47,10 @@ class TabsModel(object):
                 elif item.type == "Many-valued context":
                     newtab = contextgrid.MVContextGrid(self._tabs_view)
                     newtab.SetTable(contextgrid.MVContextTable(item, self))
+                elif item.type == "Image":
+                    png = wx.Image(item.path, wx.BITMAP_TYPE_PNG).ConvertToBitmap()
+                    newtab = wx.Panel(self._tabs_view, -1)
+                    wx.StaticBitmap(newtab, -1, png, (10, 10), (png.GetWidth(), png.GetHeight()))
                 else:
                     newtab = wx.TextCtrl(self._tabs_view, -1, "", size=(200, 100), 
                                      style=wx.TE_MULTILINE|wx.TE_READONLY)

@@ -9,6 +9,8 @@ from workspacemodel import WorkspaceModel
 from pluginsmanager import PluginsManager
 from typesmanager import TypesManager
 
+import images
+
 tree_settings = {
 "size" : (200, -1),
 "style" : wx.TR_DEFAULT_STYLE | wx.TR_FULL_ROW_HIGHLIGHT
@@ -25,19 +27,26 @@ class WorkspaceView(wx.TreeCtrl):
         """
         super(WorkspaceView, self).__init__(parent, **tree_settings)
 
-        isz = (16, 16)
-        il = wx.ImageList(isz[0], isz[1])
-        il.Add(wx.ArtProvider_GetBitmap(wx.ART_FOLDER,      wx.ART_OTHER, isz))
-        il.Add(wx.ArtProvider_GetBitmap(wx.ART_FILE_OPEN,   wx.ART_OTHER, isz))
-        il.Add(wx.ArtProvider_GetBitmap(wx.ART_NORMAL_FILE, wx.ART_OTHER, isz))
-        self.SetImageList(il)
-        self._imagelist = il
+        self.init_images()
         
         self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnTreeItemActivated)
         self.Bind(wx.EVT_RIGHT_DOWN, self.OnRightDown)
         # Works well on Windows, but fail on linux
         # self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
         self.Bind(wx.EVT_RIGHT_UP, self.OnContextMenu)
+        
+    def init_images(self):
+        self.type_image_index = {}
+        isz = (16, 16)
+        il = wx.ImageList(isz[0], isz[1])
+        for type in TypesManager.GetKnownTypes():
+            if type == "Folder":
+                tuple = TypesManager.GetIcon(type)
+                self.type_image_index[type] = (il.Add(tuple[0]), il.Add(tuple[1]))
+            else:
+                self.type_image_index[type] = il.Add(TypesManager.GetIcon(type))
+        self.SetImageList(il)
+        self._imagelist = il
         
     def SetModel(self, model):
         self._model = model
@@ -46,8 +55,8 @@ class WorkspaceView(wx.TreeCtrl):
         new_tree_item = self.AddRoot(model._root.name)
         self.SetPyData(new_tree_item, model._root)
         
-        self.SetItemImage(new_tree_item, 0, wx.TreeItemIcon_Normal)
-        self.SetItemImage(new_tree_item, 1, wx.TreeItemIcon_Expanded)
+        self.SetItemImage(new_tree_item, self.type_image_index["Folder"][0], wx.TreeItemIcon_Normal)
+        self.SetItemImage(new_tree_item, self.type_image_index["Folder"][1], wx.TreeItemIcon_Expanded)
         self.Walk(model._root, self.GetRootItem())
         
         self.Expand(new_tree_item)
@@ -59,8 +68,8 @@ class WorkspaceView(wx.TreeCtrl):
         model = self._model
         
         new_tree_item = self.AddRoot(model._root.name)
-        self.SetItemImage(new_tree_item, 0, wx.TreeItemIcon_Normal)
-        self.SetItemImage(new_tree_item, 1, wx.TreeItemIcon_Expanded)
+        self.SetItemImage(new_tree_item, self.type_image_index["Folder"][0], wx.TreeItemIcon_Normal)
+        self.SetItemImage(new_tree_item, self.type_image_index["Folder"][1], wx.TreeItemIcon_Expanded)
         self.Walk(model._root, self.GetRootItem())
         self.Expand(new_tree_item)
          
@@ -93,10 +102,10 @@ class WorkspaceView(wx.TreeCtrl):
         new_tree_item = self.AppendItem(parent, item.name)
         self.SetPyData(new_tree_item, item)
         if item.dir:
-            self.SetItemImage(new_tree_item, 0, wx.TreeItemIcon_Normal)
-            self.SetItemImage(new_tree_item, 1, wx.TreeItemIcon_Expanded)
+            self.SetItemImage(new_tree_item, self.type_image_index["Folder"][0], wx.TreeItemIcon_Normal)
+            self.SetItemImage(new_tree_item, self.type_image_index["Folder"][1], wx.TreeItemIcon_Expanded)
         else:
-            self.SetItemImage(new_tree_item, 2, wx.TreeItemIcon_Normal)
+            self.SetItemImage(new_tree_item, self.type_image_index[item.type], wx.TreeItemIcon_Normal)
         return new_tree_item
             
     def OnRightDown(self, event):
@@ -114,6 +123,12 @@ class WorkspaceView(wx.TreeCtrl):
         New_submenu = wx.Menu()
         menu_item = New_submenu.Append(wx.NewId(), "Folder")
         self.Bind(wx.EVT_MENU, self.OnNewFolderClick, menu_item)
+        
+        menu_item = New_submenu.Append(wx.NewId(), "Context")
+        self.Bind(wx.EVT_MENU, self.OnNewContextClick, menu_item)
+        
+        menu_item = New_submenu.Append(wx.NewId(), "Many-valued context")
+        self.Bind(wx.EVT_MENU, self.OnNewManyValuedContextClick, menu_item)
         
         menu.AppendMenu(wx.NewId(), "New", New_submenu)
             
@@ -141,17 +156,67 @@ class WorkspaceView(wx.TreeCtrl):
             types = TypesManager.GetPossibleTypes(active_item)
             for type in types:
                 menu_item = types_submenu.AppendRadioItem(wx.NewId(), type)
-                f = lambda event, item=active_item, type=type:\
-                    self._model.SetItemType(item, type)
+                
+                f = lambda event, tree_item=active_treeitem_id, type=type:\
+                    self.SetItemType(tree_item, type)
+                    
                 self.Bind(wx.EVT_MENU, f, menu_item)
                 if active_item.type == type:
                     menu_item.Check()
-                
                 
             menu.AppendMenu(wx.NewId(), "Type", types_submenu)
             
         self.PopupMenu(menu)
         menu.Destroy()
+        
+    def SetItemType(self, tree_item, type):
+        item = self.GetPyData(tree_item)
+        if item.dir:
+            self.SetItemImage(tree_item, self.type_image_index["Folder"][0], wx.TreeItemIcon_Normal)
+            self.SetItemImage(tree_item, self.type_image_index["Folder"][1], wx.TreeItemIcon_Expanded)
+        else:
+            self.SetItemImage(tree_item, self.type_image_index[type], wx.TreeItemIcon_Normal)
+        self._model.SetItemType(item, type)
+        
+    def OnNewContextClick(self, event):
+        active_treeitem_id = self.GetSelection()
+        active_item = self.GetPyData(active_treeitem_id)
+        if not active_item.dir:
+            active_item = active_item.parent
+            active_treeitem_id = self.GetItemParent(active_treeitem_id)
+        
+        dlg = wx.TextEntryDialog(
+                self.GetParent(), "Enter name:",
+                "New context")
+
+        dlg.SetValue("context.cxt")
+        
+        if dlg.ShowModal() == wx.ID_OK:
+            name = dlg.GetValue()
+            new_item = self._model.NewContext(active_item, name)
+            
+            if new_item:
+                self.AddItem(active_treeitem_id, new_item)
+    
+    def OnNewManyValuedContextClick(self, event):
+        active_treeitem_id = self.GetSelection()
+        active_item = self.GetPyData(active_treeitem_id)
+        if not active_item.dir:
+            active_item = active_item.parent
+            active_treeitem_id = self.GetItemParent(active_treeitem_id)
+        
+        dlg = wx.TextEntryDialog(
+                self.GetParent(), "Enter name:",
+                "New many-valued context")
+
+        dlg.SetValue("mvcontext.txt")
+        
+        if dlg.ShowModal() == wx.ID_OK:
+            name = dlg.GetValue()
+            new_item = self._model.NewMVContext(active_item, name)
+            
+            if new_item:
+                self.AddItem(active_treeitem_id, new_item)
             
     def OnImportFileClick(self, event): 
         item = self.GetSelection()
@@ -248,8 +313,9 @@ class WorkspaceView(wx.TreeCtrl):
             if new_item:
                 new_tree_item = self.AppendItem(active_treeitem_id, new_item.name)
                 self.SetPyData(new_tree_item, new_item)
-                self.SetItemImage(new_tree_item, 0, wx.TreeItemIcon_Normal)
-                self.SetItemImage(new_tree_item, 1, wx.TreeItemIcon_Expanded)
+                self.SetItemImage(new_tree_item, self.type_image_index["Folder"][0], wx.TreeItemIcon_Normal)
+                self.SetItemImage(new_tree_item, self.type_image_index["Folder"][1], wx.TreeItemIcon_Expanded)
+
         
     def GetModel(self):
         return self._model

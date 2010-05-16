@@ -33,6 +33,13 @@ class MainFrame(wx.Frame):
         
         images.initialize()
         
+        _icon = wx.EmptyIcon()
+        _icon.CopyFromBitmap(images.GetBitmap("AppIcon"))
+        self.SetIcon(_icon)
+        
+        tbicon = wx.TaskBarIcon()
+        tbicon.SetIcon(_icon)
+        
         self.sp = wx.SplitterWindow(self)
         
         self.tree = workspaceview.WorkspaceView(self.sp)
