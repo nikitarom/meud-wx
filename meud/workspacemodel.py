@@ -114,7 +114,10 @@ class WorkspaceModel(object):
         if item.dir:
             shutil.rmtree(item.path)
         else:
-            os.remove(item.path)
+            try:
+                os.remove(item.path)
+            except:
+                pass
             
         item.parent.children.remove(item)
         del item

@@ -56,6 +56,7 @@ class WorkspaceView(wx.TreeCtrl):
         
         new_tree_item = self.AddRoot(model._root.name)
         self.SetPyData(new_tree_item, model._root)
+        self._ids[model._root] = new_tree_item
         
         self.SetItemImage(new_tree_item, self.type_image_index["Folder"][0], wx.TreeItemIcon_Normal)
         self.SetItemImage(new_tree_item, self.type_image_index["Folder"][1], wx.TreeItemIcon_Expanded)

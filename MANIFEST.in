@@ -1,0 +1,4 @@
+*.py *.pyw
+recursive-include meud *.txt *.py *.png 
+recursive-include
+exclude .git workspace
