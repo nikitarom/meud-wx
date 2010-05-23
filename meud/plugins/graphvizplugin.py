@@ -5,7 +5,8 @@ from _plugin import Plugin
 
 class GraphvizPlugin(Plugin):
     name = "Graphviz"
-    graphviz_path = "C:/Program Files/Graphviz2.26.3/bin/"
+    # graphviz_path = "C:/Program Files/Graphviz2.26.3/bin/"
+    graphviz_path = "/usr/local/bin/"
     
     def get_actions(self, item):
         if item.type == "Graphviz dot":
@@ -23,8 +24,12 @@ class GraphvizPlugin(Plugin):
             newpath = default_path[:-4] + "-{0}".format(i) + newpath[-4:]
             i += 1
         
-        dot_path = os.path.join(self.graphviz_path, "dot.exe")
-        os.spawnl(os.P_WAIT, dot_path, "dot.exe", "-Tpng",
+        dot_path = os.path.join(self.graphviz_path, "dot")
+        os.spawnl(os.P_WAIT, dot_path, "dot", "-Tpng",
                    "-o{0}".format(newpath), item.path)
-        return [newpath]
+        
+        if not os.path.exists(newpath):
+            return []
+        else:
+            return [newpath]
         

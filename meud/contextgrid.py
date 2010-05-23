@@ -167,6 +167,7 @@ class ContextTable(wx.grid.PyGridTableBase):
     def SaveAs(self, path):
         fca.write_cxt(self.context, path)
         self._item = self._model.FileSaveAs(path, self._view)
+        self.path = self._item.path
             
     def AppendCols(self, numCols=1):
         self.DoUnsaved()

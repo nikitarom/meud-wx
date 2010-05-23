@@ -89,7 +89,8 @@ class WorkspaceModel(object):
         if not paths:
             return
         for path in paths:
-            self.AddFile(path, precessor_item)
+            if os.path.exists(path):
+                self.AddFile(path, precessor_item)
         self.SaveWorkspace()
             
     def _GetParentItemByPath(self, path):
