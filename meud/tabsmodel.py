@@ -7,6 +7,7 @@ from wx.lib.scrolledpanel import ScrolledPanel
 import fca
 
 import contextgrid
+import diagramview
 
 class TabsModel(object):
     
@@ -57,16 +58,30 @@ class TabsModel(object):
                     newtab.SetScrollRate(20,20)
                     newtab.SetVirtualSize((png.GetWidth() + 20, png.GetHeight() + 20))
                 elif item.type == "Concepts":
-                    newtab = wx.TextCtrl(self._tabs_view, -1, "", size=(200, 100), 
-                                     style=wx.TE_MULTILINE|wx.TE_READONLY|wx.TE_DONTWRAP)
-                    newtab.SetFont(wx.Font(9, wx.FONTFAMILY_MODERN, wx.FONTSTYLE_NORMAL,
-                                       wx.FONTWEIGHT_NORMAL))
-                    cs = fca.read_xml(item.path)
-                    for concept in cs:
-                        s = "[{0} : {1}] @ {2}\n".format(", ".join(concept.extent),
-                                                         ", ".join(concept.intent),
-                                                         concept.meta)
-                        newtab.WriteText(s)
+                    dlg = wx.SingleChoiceDialog(
+                            None, 'What do you want to do?', 'Choose variant',
+                            ["View diagram", "View concepts"], 
+                            wx.CHOICEDLG_STYLE
+                            )
+                    what = "View concepts"
+                    if dlg.ShowModal() == wx.ID_OK:
+                        what = dlg.GetStringSelection()
+                    dlg.Destroy()
+                        
+                    if what == "View concepts":
+                        newtab = wx.TextCtrl(self._tabs_view, -1, "", size=(200, 100), 
+                                         style=wx.TE_MULTILINE|wx.TE_READONLY|wx.TE_DONTWRAP)
+                        newtab.SetFont(wx.Font(9, wx.FONTFAMILY_MODERN, wx.FONTSTYLE_NORMAL,
+                                           wx.FONTWEIGHT_NORMAL))
+                        cs = fca.read_xml(item.path)
+                        for concept in cs:
+                            s = "[{0} : {1}] @ {2}\n".format(", ".join(concept.extent),
+                                                             ", ".join(concept.intent),
+                                                             concept.meta)
+                            newtab.WriteText(s)
+                    elif what == "View diagram":
+                        newtab = diagramview.MyCanvas(self._tabs_view, wx.NewId())
+                        newtab.SetConceptSystem(fca.read_xml(item.path))
                 else:
                     newtab = wx.TextCtrl(self._tabs_view, -1, "", size=(200, 100), 
                                      style=wx.TE_MULTILINE|wx.TE_READONLY)
