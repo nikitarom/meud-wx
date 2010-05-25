@@ -79,8 +79,8 @@ class MyCanvas(wx.ScrolledWindow):
         for concept in cl:
             new_coords = (10 + self._positions[concept][0] * (size[0] - 20),
             size[1] - 10 - self._positions[concept][1] * (size[1] - 20))
-            self.nodes.append(ConceptNode(concept, new_coords, own_objects[concept],
-                                own_attributes[concept]))
+            self.nodes.append(ConceptNode(concept, new_coords, own_attributes[concept],
+                                own_objects[concept]))
         
         self.lines = []
         for i in range(len(cl)):
