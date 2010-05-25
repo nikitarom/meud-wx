@@ -80,8 +80,8 @@ class TabsModel(object):
                                                              concept.meta)
                             newtab.WriteText(s)
                     elif what == "View diagram":
-                        newtab = diagramview.MyCanvas(self._tabs_view, wx.NewId())
-                        newtab.SetConceptSystem(fca.read_xml(item.path))
+                        newtab = diagramview.DiagramWindow(self._tabs_view, wx.NewId())
+                        newtab.canvas.SetConceptSystem(fca.read_xml(item.path))
                 else:
                     newtab = wx.TextCtrl(self._tabs_view, -1, "", size=(200, 100), 
                                      style=wx.TE_MULTILINE|wx.TE_READONLY)

@@ -1,5 +1,7 @@
 import wx
 
+import images
+
 class ConceptNode(object):
     
     def get_position(self):
@@ -146,6 +148,75 @@ class MyCanvas(wx.ScrolledWindow):
                 return False
         return True
         
+    def saveSnapshot(self, path):
+        dcSource = wx.PaintDC(self)
+        
+        # based largely on code posted to wxpython-users by Andrea Gavana 2006-11-08
+        size = dcSource.Size
+
+        # Create a Bitmap that will later on hold the screenshot image
+        # Note that the Bitmap must have a size big enough to hold the screenshot
+        # -1 means using the current default colour depth
+        bmp = wx.EmptyBitmap(size.width, size.height)
+
+        # Create a memory DC that will be used for actually taking the screenshot
+        memDC = wx.MemoryDC()
+
+        # Tell the memory DC to use our Bitmap
+        # all drawing action on the memory DC will go to the Bitmap now
+        memDC.SelectObject(bmp)
+
+        # Blit (in this case copy) the actual screen on the memory DC
+        # and thus the Bitmap
+        memDC.Blit( 0, # Copy to this X coordinate
+            0, # Copy to this Y coordinate
+            size.width, # Copy this width
+            size.height, # Copy this height
+            dcSource, # From where do we copy?
+            0, # What's the X offset in the original DC?
+            0  # What's the Y offset in the original DC?
+            )
+
+        # Select the Bitmap out of the memory DC by selecting a new
+        # uninitialized Bitmap
+        memDC.SelectObject(wx.NullBitmap)
+
+        img = bmp.ConvertToImage()
+        img.SaveFile(path, wx.BITMAP_TYPE_PNG)
+        
+class DiagramWindow(wx.Panel):
+    
+    def __init__(self, parent, id):
+        """docstring for __init__"""
+        wx.Panel.__init__(self, parent, -1)
+        self.canvas = MyCanvas(self, -1)
+        
+        self.toolBar = self.CreateToolBar()
+        self.toolBar.Realize()
+        
+    def CreateToolBar(self):
+        tb = wx.ToolBar(self)
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(tb, 0, wx.EXPAND)
+        sizer.Add(self.canvas, 1, wx.EXPAND)
+        self.SetSizer(sizer)
+
+        tool = tb.AddLabelTool(wx.NewId(), "Save", images.GetBitmap("Save"),
+                shortHelp="Save image")
+        self.Bind(wx.EVT_TOOL, self.OnSave, tool)
+
+        return tb
+        
+    def OnSave(self, event):
+        dlg = wx.FileDialog(self, "Choose a file name to save the image as a PNG to",
+                            defaultDir = "",
+                            defaultFile = "",
+                            wildcard = "*.png",
+                            style=wx.SAVE)
+        if dlg.ShowModal() == wx.ID_OK:
+            self.canvas.saveSnapshot(dlg.GetPath())
+        dlg.Destroy()
+        
         
 def find_own_objects(cs):
     """Return set of own objects for current concept"""
@@ -215,7 +286,7 @@ def get_coordinates(concept_system):
 if __name__ == "__main__":
     app = wx.PySimpleApp()
     frame = wx.Frame(parent=None, title="Test Window")
-    win = MyCanvas(frame, wx.ID_ANY)
+    win = DiagramWindow(frame, wx.ID_ANY)
     frame.Show()
     from fca import (Context, Concept, ConceptLattice)
     ct = [[True, False, False, True],\
@@ -226,5 +297,5 @@ if __name__ == "__main__":
     attrs = ['a', 'b', 'c', 'd']
     c = Context(ct, objs, attrs)
     cl = ConceptLattice(c)
-    win.SetConceptSystem(cl)
+    win.canvas.SetConceptSystem(cl)
     app.MainLoop()
