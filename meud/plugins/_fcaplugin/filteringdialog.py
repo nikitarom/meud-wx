@@ -15,7 +15,11 @@ def GetFilteredConcepts(item):
         precessor = item.precessor
         while not precessor.type == "Context":
             precessor = precessor.precessor
-        cs.context = fca.read_cxt(precessor.path)
+        (root, ext) = os.path.splitext(precessor.name)
+        if ext == ".cxt":
+            cxt = fca.read_cxt(precessor.path)
+        elif ext == ".txt":
+            cxt = fca.read_txt(precessor.path)
         new_cs = fca.filter_concepts(cs, options["function"], options["mode"], options["opt"])
         
         default_path = item.path[:-4] + "-filtered.xml"
