@@ -36,8 +36,14 @@ class ConceptNode(object):
                     bottom_labels=["Bottom"]):
         self._pos = pos
         self._concept = concept
-        self._t_labels = top_labels
-        self._b_labels = bottom_labels
+        if (len(top_labels) > 5):
+            self._t_labels = [str(len(top_labels))]
+        else:
+            self._t_labels = top_labels
+        if (len(bottom_labels) > 5):
+            self._b_labels = [str(len(bottom_labels))]
+        else:
+            self._b_labels = bottom_labels
         
     def draw(self, dc):
         dc.SetBrush(wx.Brush("BLUE"))
