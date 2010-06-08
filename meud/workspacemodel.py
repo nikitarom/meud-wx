@@ -110,6 +110,7 @@ class WorkspaceModel(object):
             
     def SetItemType(self, item, type):
         item.type = type
+        self.SaveWorkspace()
         
     def DeleteItem(self, item):
         if item.dir:

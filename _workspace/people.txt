@@ -1,0 +1,12 @@
+Eugen	Peter	Paul	Stas	Eve	Den	Boris	Barbara	Kolya
+Age	Sex	Circumstances
+
+6	male	middle class
+16	male	middle class
+17	male	middle class
+37	male	poor
+37	female	middle class
+37	male	middle class
+63	male	rich
+66	female	middle class
+69	male	middle class
