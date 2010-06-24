@@ -41,7 +41,7 @@ class ConceptNode(object):
             self._t_labels = [str(len(top_labels))]
         else:
             self._t_labels = top_labels
-        if (len(bottom_labels) > 5):
+        if (len(bottom_labels) > 10):
             self._b_labels = [str(len(bottom_labels))]
         else:
             self._b_labels = bottom_labels
@@ -264,13 +264,19 @@ def get_coordinates(concept_system):
     
     coordinates = {}
     
-    fca.write_dot(concept_system, temp_dot_path)
+    from fca.readwrite import uwrite_dot
+    uwrite_dot(concept_system, temp_dot_path)
     
     dot_path = os.path.join(graphviz_path, "dot")
-    os.spawnl(os.P_WAIT, dot_path, "dot", "-Tplain",
-               "-o{0}".format(temp_plain_path), temp_dot_path)
+    try:
+        os.spawnl(os.P_WAIT, dot_path, "dot", "-Tplain",
+                "-o{0}".format(temp_plain_path), temp_dot_path)
+    except:
+        print "Dot error!"
+        return
     
-    plain_dot_file = open(temp_plain_path)
+    import codecs
+    plain_dot_file = codecs.open(temp_plain_path, "r", "utf-8")
     
     for line in plain_dot_file:
         spl_line = line.split(" ")

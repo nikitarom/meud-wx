@@ -5,6 +5,7 @@ import wx
 from wx.lib.scrolledpanel import ScrolledPanel
 
 import fca
+from fca.readwrite import uread_xml
 
 import contextgrid
 import diagramview
@@ -70,18 +71,18 @@ class TabsModel(object):
                         
                     if what == "View concepts":
                         newtab = wx.TextCtrl(self._tabs_view, -1, "", size=(200, 100), 
-                                         style=wx.TE_MULTILINE|wx.TE_READONLY|wx.TE_DONTWRAP)
-                        newtab.SetFont(wx.Font(9, wx.FONTFAMILY_MODERN, wx.FONTSTYLE_NORMAL,
+                                         style=wx.TE_MULTILINE|wx.TE_READONLY|wx.TE_WORDWRAP)
+                        newtab.SetFont(wx.Font(12, wx.FONTFAMILY_MODERN, wx.FONTSTYLE_NORMAL,
                                            wx.FONTWEIGHT_NORMAL))
-                        cs = fca.read_xml(item.path)
+                        cs = uread_xml(item.path)
                         for concept in cs:
-                            s = "[{0} : {1}] @ {2}\n".format(", ".join(concept.extent),
+                            s = u"[{0} : {1}] @ {2}\n".format(", ".join(concept.extent),
                                                              ", ".join(concept.intent),
                                                              concept.meta)
                             newtab.WriteText(s)
                     elif what == "View diagram":
                         newtab = diagramview.DiagramWindow(self._tabs_view, wx.NewId())
-                        newtab.canvas.SetConceptSystem(fca.read_xml(item.path))
+                        newtab.canvas.SetConceptSystem(uread_xml(item.path))
                 else:
                     newtab = wx.TextCtrl(self._tabs_view, -1, "", size=(200, 100), 
                                      style=wx.TE_MULTILINE|wx.TE_READONLY)

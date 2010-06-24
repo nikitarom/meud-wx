@@ -5,6 +5,7 @@ import os.path
 import wx.grid
 
 import fca
+from fca.readwrite import (uwrite_cxt, uread_cxt)
 
 import images
 
@@ -107,7 +108,7 @@ class ContextTable(wx.grid.PyGridTableBase):
         wx.grid.PyGridTableBase.__init__(self)
         (head, ext) = os.path.splitext(path)
         if ext == ".cxt":
-            context = fca.read_cxt(path)
+            context = uread_cxt(path)
         elif ext == ".txt":
             context = fca.read_txt(path)
         self.path = path
@@ -118,7 +119,7 @@ class ContextTable(wx.grid.PyGridTableBase):
         
     def Save(self):
         self._model.DoSaved(self._item)
-        fca.write_cxt(self.context, self.path)
+        uwrite_cxt(self.context, self.path)
         
     def GetNumberRows(self):
         return len(self.context) + 1
@@ -165,7 +166,7 @@ class ContextTable(wx.grid.PyGridTableBase):
             self.DoUnsaved()
             
     def SaveAs(self, path):
-        fca.write_cxt(self.context, path)
+        uwrite_cxt(self.context, path)
         self._item = self._model.FileSaveAs(path, self._view)
         self.path = self._item.path
             

@@ -5,6 +5,7 @@ import wx
 
 import fca
 import fca.algorithms.filtering as filtering
+from fca.readwrite import uread_xml, uread_cxt
 
 from _plugin import Plugin
 import _fcaplugin
@@ -36,7 +37,7 @@ class FCAPlugin(Plugin):
         return _fcaplugin.GetFilteredConcepts(item)
     
     def ComputeIndex(self, item, workspace):
-        cs = fca.read_xml(item.path)
+        cs = uread_xml(item.path)
         functions = filtering.get_compute_functions()
         
         dlg = wx.SingleChoiceDialog(
@@ -84,7 +85,7 @@ class FCAPlugin(Plugin):
     def SaveConcepts(self, item):
         (root, ext) = os.path.splitext(item.name)
         if ext == ".cxt":
-            cxt = fca.read_cxt(item.path)
+            cxt = uread_cxt(item.path)
         elif ext == ".txt":
             cxt = fca.read_txt(item.path)
         cl = fca.ConceptLattice(cxt)

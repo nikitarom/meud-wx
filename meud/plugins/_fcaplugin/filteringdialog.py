@@ -4,13 +4,14 @@ import wx
 
 import fca
 import fca.algorithms.filtering as filtering
+from fca.readwrite import uread_xml
 
 def GetFilteredConcepts(item):
     dialog = FilteringDialog() 
     result = dialog.ShowModal()
     if result == wx.ID_OK:
         options = dialog.GetOptions()
-        cs = fca.read_xml(item.path)
+        cs = uread_xml(item.path)
         
         precessor = item.precessor
         while not precessor.type == "Context":
