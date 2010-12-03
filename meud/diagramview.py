@@ -183,7 +183,7 @@ class MyCanvas(wx.ScrolledWindow):
             j = self.cs.index(concept)
             highlight_upper_node(self.nodes[j])
             
-        for concept in self.cs.children(concept):
+        for concept in self.cs.children(current_concept):
             j = self.cs.index(current_concept)
             highlight_lower_node(self.nodes[j])
         
