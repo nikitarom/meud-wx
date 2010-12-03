@@ -33,6 +33,8 @@ class ConceptNode(object):
         
     concept = property(get_concept)
     
+    is_highlighted = False
+    
     def __init__(self, concept=None, pos=(100, 100), top_labels=["Top"],
                     bottom_labels=["Bottom"]):
         self._pos = pos
@@ -41,6 +43,10 @@ class ConceptNode(object):
         self._b_labels = [str(len(bottom_labels))]
         
     def draw(self, dc):
+        if self.is_highlighted:
+            dc.SetPen(wx.RED_PEN)
+        else:
+            dc.SetPen(wx.BLACK_PEN)
         CIRCLE_RADIUS = 10
         dc.SetBrush(wx.Brush("BLUE"))
         dc.DrawCircle(self.X, self.Y, CIRCLE_RADIUS)
@@ -52,6 +58,7 @@ class ConceptNode(object):
                                 dc.GetFullTextExtent(self._t_labels[i])
             if lwidth > rect_width:
                 rect_width = lwidth
+        dc.SetPen(wx.BLACK_PEN)
         dc.SetBrush(wx.Brush("WHITE"))
         dc.DrawRectangle(self.X - rect_width / 2 - 3, 
                          self.Y - h_step * len(self._t_labels) - 10, 
@@ -131,6 +138,10 @@ class MyCanvas(wx.ScrolledWindow):
         dc.Clear()
         
         for line in self.lines:
+            if line[0].is_highlighted and line[1].is_highlighted:
+                dc.SetPen(wx.RED_PEN)
+            else:
+                dc.SetPen(wx.BLACK_PEN)
             dc.DrawLine(line[0].X, line[0].Y, line[1].X, line[1].Y)
             
         for node in self.nodes:
@@ -146,13 +157,48 @@ class MyCanvas(wx.ScrolledWindow):
                 size[1] - 10 - self._positions[self.cs[i]][1] * (size[1] - 20))
                 self.nodes[i].pos = new_coords
         
+        
+    def highlight_node(self, node):
+        
+        def highlight_upper_node(node):
+            node.is_highlighted = True
+            current_concept = self.cs[self.nodes.index(node)]
+            
+            for concept in self.cs.parents(current_concept):
+                j = self.cs.index(concept)
+                highlight_upper_node(self.nodes[j])
+                
+        def highlight_lower_node(node):
+            node.is_highlighted = True
+            current_concept = self.cs[self.nodes.index(node)]
+
+            for concept in self.cs.children(current_concept):
+                j = self.cs.index(concept)
+                highlight_lower_node(self.nodes[j])
+        
+        node.is_highlighted = True
+        current_concept = self.cs[self.nodes.index(node)]
+        
+        for concept in self.cs.parents(current_concept):
+            j = self.cs.index(concept)
+            highlight_upper_node(self.nodes[j])
+            
+        for concept in self.cs.children(concept):
+            j = self.cs.index(current_concept)
+            highlight_lower_node(self.nodes[j])
+        
     def OnMouse(self, event):
         if event.LeftDown():
             (x, y) = (event.GetX(), event.GetY())
             for node in self.nodes:
+                node.is_highlighted = False
+            self.Refresh()
+            for node in self.nodes:
                 if node.hit_test(x, y):
                     self._dragged = node
+                    self.highlight_node(node)
                     self._last_pos = (x, y)
+                    is_breaked = True
                     break
         elif event.Dragging() or event.LeftUp():
             if self._dragged:
