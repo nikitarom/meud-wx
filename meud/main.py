@@ -56,7 +56,14 @@ class MainFrame(wx.Frame):
         self.sp.SetMinimumPaneSize(10)
         self.sp.SplitVertically(self.tree, self.nb, 200)
         
-        #self.SetupMenubar()
+        # self.SetupMenubar()
+        # self.toolBar = self.CreateToolBar()
+        # self.SetToolBar(self.toolBar)
+        
+    def CreateToolBar(self):
+        tb = wx.ToolBar(self)
+
+        return tb    
         
     def SetupMenubar(self):
         """docstring for SetupMenubar"""

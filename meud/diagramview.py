@@ -37,24 +37,48 @@ class ConceptNode(object):
                     bottom_labels=["Bottom"]):
         self._pos = pos
         self._concept = concept
-        if (len(top_labels) > 5):
-            self._t_labels = [str(len(top_labels))]
-        else:
-            self._t_labels = top_labels
-        if (len(bottom_labels) > 10):
-            self._b_labels = [str(len(bottom_labels))]
-        else:
-            self._b_labels = bottom_labels
+        self._t_labels = top_labels
+        self._b_labels = [str(len(bottom_labels))]
         
     def draw(self, dc):
+        CIRCLE_RADIUS = 10
         dc.SetBrush(wx.Brush("BLUE"))
-        dc.DrawCircle(self.X, self.Y, 10)
+        dc.DrawCircle(self.X, self.Y, CIRCLE_RADIUS)
         
         h_step = dc.GetCharHeight()
+        rect_width = 0
         for i in range(len(self._t_labels)):
-            dc.DrawText(self._t_labels[i], self.X - 10, self.Y - 25 - h_step*i)
+            lwidth, lheight, ldescent, el = \
+                                dc.GetFullTextExtent(self._t_labels[i])
+            if lwidth > rect_width:
+                rect_width = lwidth
+        dc.SetBrush(wx.Brush("WHITE"))
+        dc.DrawRectangle(self.X - rect_width / 2 - 3, 
+                         self.Y - h_step * len(self._t_labels) - 10, 
+                         rect_width + 6,
+                         h_step * len(self._t_labels) + 2)
+                         
+        for i in range(len(self._t_labels)):
+            horizontal_offset = rect_width / 2
+            dc.DrawText(self._t_labels[i], self.X - horizontal_offset, 
+                self.Y - 25 - h_step*i)
+                
+        rect_width = 0
         for i in range(len(self._b_labels)):
-            dc.DrawText(self._b_labels[i], self.X - 10, self.Y + 10 + h_step*i)
+            lwidth, lheight, ldescent, el = \
+                                dc.GetFullTextExtent(self._b_labels[i])
+            if lwidth > rect_width:
+                rect_width = lwidth
+        dc.SetBrush(wx.Brush("WHITE"))
+        dc.DrawRectangle(self.X - rect_width / 2 - 3, 
+                         self.Y + 8, 
+                         rect_width + 6,
+                         h_step * len(self._b_labels) + 2)
+
+        for i in range(len(self._b_labels)):
+            horizontal_offset = rect_width / 2
+            dc.DrawText(self._b_labels[i], self.X - horizontal_offset, 
+                self.Y + 10 + h_step*i)
         
     def hit_test(self, x, y):
         if ((x-self.X) ** 2 + (y - self.Y) ** 2) <= 10 * 10:
@@ -89,7 +113,7 @@ class MyCanvas(wx.ScrolledWindow):
             new_coords = (10 + self._positions[concept][0] * (size[0] - 20),
             size[1] - 10 - self._positions[concept][1] * (size[1] - 20))
             self.nodes.append(ConceptNode(concept, new_coords, own_attributes[concept],
-                                own_objects[concept]))
+                                concept.extent))
         
         self.lines = []
         for i in range(len(cl)):
