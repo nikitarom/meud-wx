@@ -226,10 +226,11 @@ class WorkspaceView(wx.TreeCtrl):
             )
         
         if dlg.ShowModal() == wx.ID_OK:
-            path = dlg.GetPath()
-            if self._model.CheckPath(path, parent):
-                newitem = self._model.ImportFile(path, parent)
-                self.AddItem(item, newitem)
+            paths = dlg.GetPaths()
+            for path in paths:
+                if self._model.CheckPath(path, parent):
+                    newitem = self._model.ImportFile(path, parent)
+                    self.AddItem(item, newitem)
             
         dlg.Destroy()
         
@@ -259,7 +260,7 @@ class WorkspaceView(wx.TreeCtrl):
         active_treeitem_id = self.GetSelection()
         active_item = self.GetPyData(active_treeitem_id)
         
-        msg = "Are you sure to delete '{0}' from the file system".format(active_item.name)
+        msg = u"Are you sure to delete '{0}' from the file system".format(active_item.name)
         dlg = wx.MessageDialog(self, msg,
                                "Delete resources",
                                wx.YES_NO | wx.ICON_INFORMATION

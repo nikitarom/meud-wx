@@ -14,7 +14,7 @@ class TestPlugin(Plugin):
                 precessor_type = item.precessor.type
             else:
                 precessor_type = None
-            msg = "You are {0}\n\
+            msg = u"You are {0}\n\
                    Path: {1}\n\
                    Parent: {2}\n\
                    Dir: {3}\n\
