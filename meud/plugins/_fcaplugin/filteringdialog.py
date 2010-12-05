@@ -22,7 +22,8 @@ def GetFilteredConcepts(item):
         elif ext == ".txt":
             cxt = fca.read_txt(precessor.path)
         cs.context = cxt
-        new_cs = fca.filter_concepts(cs, options["function"], options["mode"], options["opt"])
+        new_cs = fca.filter_concepts(cs, options["function"], options["mode"], 
+                options["opt"])
         
         default_path = item.path[:-4] + "-filtered.xml"
         newpath = default_path

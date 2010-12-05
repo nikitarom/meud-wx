@@ -9,6 +9,11 @@ files_categories = {
 "concept_systems" : "Concept Systems"
 }
 
-workspace_path = r"workspace"
+workspace_path = None
+if not workspace_path:
+    import codecs
+    pth_file = codecs.open("workspace.pth", "r", "utf-8")
+    workspace_path = pth_file.readline()
+    
 plugins_path = r"meud/plugins"
 

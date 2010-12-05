@@ -45,6 +45,7 @@ class MainFrame(wx.Frame):
         self.tree = workspaceview.WorkspaceView(self.sp)
         if DEBUG:
             w_path = os.path.abspath(workspace_path)
+            self.SetLabel(workspace_path)
             self.tree.SetModel(workspacemodel.WorkspaceModel(w_path))
         self.nb = TabsView(self.sp)
         tmodel = tabsmodel.TabsModel(self.tree.GetModel())

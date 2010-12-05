@@ -1,0 +1,620 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<conceptsystem>
+	<objects>
+		<object id="o1">
+			в 2&gt;10%
+		</object>
+		<object id="o2">
+			в 4&gt;6%
+		</object>
+		<object id="o3">
+			в 3&gt;15%
+		</object>
+		<object id="o4">
+			в 1&gt;15%
+		</object>
+		<object id="o5">
+			в 1&gt;6%
+		</object>
+		<object id="o6">
+			в 2&gt;12%
+		</object>
+		<object id="o7">
+			в 4&gt;15%
+		</object>
+		<object id="o8">
+			в 2&gt;15%
+		</object>
+		<object id="o9">
+			в 3&gt;6%
+		</object>
+		<object id="o10">
+			в 3&gt;12%
+		</object>
+		<object id="o11">
+			в 3&gt;10%
+		</object>
+		<object id="o12">
+			в 4&gt;12%
+		</object>
+		<object id="o13">
+			в 1&gt;10%
+		</object>
+		<object id="o14">
+			в 2&gt;6%
+		</object>
+		<object id="o15">
+			в 1&gt;12%
+		</object>
+		<object id="o16">
+			в 4&gt;10%
+		</object>
+	</objects>
+	<attributes>
+		<attribute id="a1">
+			АНДРЕЙ ФЕДОРОВ
+		</attribute>
+		<attribute id="a2">
+			АНДРЕЙ КОКОШИН
+		</attribute>
+		<attribute id="a3">
+			МИХАИЛ РЕМИЗОВ
+		</attribute>
+		<attribute id="a4">
+			БОРИС МЕЖУЕВ
+		</attribute>
+		<attribute id="a5">
+			ВЛАДИСЛАВ ИНОЗЕМЦЕВ
+		</attribute>
+		<attribute id="a6">
+			ВАДИМ МЕЖУЕВ
+		</attribute>
+		<attribute id="a7">
+			ЛЕВ ЯКОБСОН
+		</attribute>
+		<attribute id="a8">
+			ФЕДОР ЛУКЬЯНОВ
+		</attribute>
+		<attribute id="a9">
+			КИРИЛЛ ФРОЛОВ
+		</attribute>
+		<attribute id="a10">
+			ЮРИЙ МИХАЙЛОВ
+		</attribute>
+		<attribute id="a11">
+			СЕРГЕЙ КУРГИНЯН
+		</attribute>
+		<attribute id="a12">
+			ОЛЕГ КИЛЬДЮШОВ
+		</attribute>
+		<attribute id="a13">
+			ИОСИФ ДИСКИН
+		</attribute>
+		<attribute id="a14">
+			БОРИС МАКАРЕНКО
+		</attribute>
+		<attribute id="a15">
+			ВАЛЕНТИНА ФЕДОТОВА
+		</attribute>
+		<attribute id="a16">
+			ВЯЧЕСЛАВ НИКОНОВ
+		</attribute>
+		<attribute id="a17">
+			ДМИТРИЙ ВОЛОДИХИН
+		</attribute>
+		<attribute id="a18">
+			ВЛАДИМИР ЖАРИХИН
+		</attribute>
+		<attribute id="a19">
+			АЛЕКСАНДР НЕКЛЕССА
+		</attribute>
+		<attribute id="a20">
+			КОНСТАНТИН ЗАТУЛИН
+		</attribute>
+		<attribute id="a21">
+			ГЛЕБ ПАВЛОВСКИЙ
+		</attribute>
+		<attribute id="a22">
+			ВАЛЕРИЙ ХОМЯКОВ
+		</attribute>
+		<attribute id="a23">
+			ВАЛЕРИЙ ФАДЕЕВ
+		</attribute>
+		<attribute id="a24">
+			МАКСИМ ДИАНОВ
+		</attribute>
+		<attribute id="a25">
+			ЮРИЙ КРУПНОВ
+		</attribute>
+		<attribute id="a26">
+			СЕРГЕЙ БЕЛКИН
+		</attribute>
+		<attribute id="a27">
+			СЕРГЕЙ МАРКОВ
+		</attribute>
+		<attribute id="a28">
+			АНДРАНИК МИГРАНЯН
+		</attribute>
+		<attribute id="a29">
+			АЛЕКСЕЙ КАРА-МУРЗА
+		</attribute>
+		<attribute id="a30">
+			ВЯЧЕСЛАВ ИГРУНОВ
+		</attribute>
+		<attribute id="a31">
+			ОКСАНА ГАМАН-ГОЛУТВИНА
+		</attribute>
+		<attribute id="a32">
+			РУСЛАН ГРИНБЕРГ
+		</attribute>
+		<attribute id="a33">
+			ВИКТОР МИЛИТАРЕВ
+		</attribute>
+		<attribute id="a34">
+			АНДРЕЙ ФУРСОВ
+		</attribute>
+		<attribute id="a35">
+			АЛЕКСАНДР ФИЛИППОВ
+		</attribute>
+		<attribute id="a36">
+			СЕРГЕЙ ХОРУЖИЙ
+		</attribute>
+		<attribute id="a37">
+			АРКАДИЙ МАЛЕР
+		</attribute>
+		<attribute id="a38">
+			МИХАИЛ ХАЗИН
+		</attribute>
+		<attribute id="a39">
+			ИГОРЬ БУНИН
+		</attribute>
+		<attribute id="a40">
+			ГЕННАДИЙ БОРДЮГОВ
+		</attribute>
+		<attribute id="a41">
+			ОЛЕГ ГРИГОРЬЕВ
+		</attribute>
+		<attribute id="a42">
+			ВЛАДИМИР ПАНТИН
+		</attribute>
+		<attribute id="a43">
+			ВАЛЕРИЙ СОЛОВЕЙ
+		</attribute>
+		<attribute id="a44">
+			ВЛАДИМИР КАРПЕЦ
+		</attribute>
+		<attribute id="a45">
+			АЛЕКСЕЙ ЗУДИН
+		</attribute>
+		<attribute id="a46">
+			ДМИТРИЙ ОРЛОВ
+		</attribute>
+	</attributes>
+	<concepts>
+		<concept>
+			<extent/>
+			<intent>
+				<attribute ref="a1"/>
+				<attribute ref="a2"/>
+				<attribute ref="a3"/>
+				<attribute ref="a4"/>
+				<attribute ref="a5"/>
+				<attribute ref="a6"/>
+				<attribute ref="a7"/>
+				<attribute ref="a8"/>
+				<attribute ref="a9"/>
+				<attribute ref="a10"/>
+				<attribute ref="a11"/>
+				<attribute ref="a12"/>
+				<attribute ref="a13"/>
+				<attribute ref="a14"/>
+				<attribute ref="a15"/>
+				<attribute ref="a16"/>
+				<attribute ref="a17"/>
+				<attribute ref="a18"/>
+				<attribute ref="a19"/>
+				<attribute ref="a20"/>
+				<attribute ref="a21"/>
+				<attribute ref="a22"/>
+				<attribute ref="a23"/>
+				<attribute ref="a24"/>
+				<attribute ref="a25"/>
+				<attribute ref="a26"/>
+				<attribute ref="a27"/>
+				<attribute ref="a28"/>
+				<attribute ref="a29"/>
+				<attribute ref="a30"/>
+				<attribute ref="a31"/>
+				<attribute ref="a32"/>
+				<attribute ref="a33"/>
+				<attribute ref="a34"/>
+				<attribute ref="a35"/>
+				<attribute ref="a36"/>
+				<attribute ref="a37"/>
+				<attribute ref="a38"/>
+				<attribute ref="a39"/>
+				<attribute ref="a40"/>
+				<attribute ref="a41"/>
+				<attribute ref="a42"/>
+				<attribute ref="a43"/>
+				<attribute ref="a44"/>
+				<attribute ref="a45"/>
+				<attribute ref="a46"/>
+			</intent>
+			<meta Intensional_stability="1.0"/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o5"/>
+				<object ref="o13"/>
+			</extent>
+			<intent>
+				<attribute ref="a20"/>
+				<attribute ref="a22"/>
+				<attribute ref="a34"/>
+				<attribute ref="a36"/>
+				<attribute ref="a24"/>
+				<attribute ref="a25"/>
+				<attribute ref="a39"/>
+				<attribute ref="a16"/>
+				<attribute ref="a28"/>
+				<attribute ref="a43"/>
+				<attribute ref="a45"/>
+				<attribute ref="a13"/>
+			</intent>
+			<meta Intensional_stability="0.75"/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o15"/>
+				<object ref="o4"/>
+				<object ref="o5"/>
+				<object ref="o13"/>
+			</extent>
+			<intent>
+				<attribute ref="a24"/>
+				<attribute ref="a16"/>
+				<attribute ref="a13"/>
+				<attribute ref="a28"/>
+			</intent>
+			<meta Intensional_stability="0.75"/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o14"/>
+			</extent>
+			<intent>
+				<attribute ref="a5"/>
+				<attribute ref="a17"/>
+				<attribute ref="a23"/>
+				<attribute ref="a11"/>
+				<attribute ref="a12"/>
+				<attribute ref="a13"/>
+				<attribute ref="a14"/>
+				<attribute ref="a15"/>
+				<attribute ref="a20"/>
+				<attribute ref="a21"/>
+				<attribute ref="a22"/>
+				<attribute ref="a26"/>
+				<attribute ref="a27"/>
+				<attribute ref="a9"/>
+				<attribute ref="a30"/>
+				<attribute ref="a32"/>
+				<attribute ref="a29"/>
+				<attribute ref="a34"/>
+				<attribute ref="a35"/>
+				<attribute ref="a37"/>
+				<attribute ref="a4"/>
+				<attribute ref="a40"/>
+				<attribute ref="a44"/>
+			</intent>
+			<meta Intensional_stability="0.5"/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o5"/>
+				<object ref="o13"/>
+				<object ref="o14"/>
+			</extent>
+			<intent>
+				<attribute ref="a20"/>
+				<attribute ref="a22"/>
+				<attribute ref="a13"/>
+				<attribute ref="a34"/>
+			</intent>
+			<meta Intensional_stability="0.375"/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o1"/>
+				<object ref="o2"/>
+				<object ref="o3"/>
+				<object ref="o4"/>
+				<object ref="o5"/>
+				<object ref="o6"/>
+				<object ref="o7"/>
+				<object ref="o9"/>
+				<object ref="o10"/>
+				<object ref="o11"/>
+				<object ref="o12"/>
+				<object ref="o13"/>
+				<object ref="o14"/>
+				<object ref="o15"/>
+				<object ref="o16"/>
+			</extent>
+			<intent>
+				<attribute ref="a13"/>
+			</intent>
+			<meta Intensional_stability="0.935485839844"/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o1"/>
+				<object ref="o2"/>
+				<object ref="o3"/>
+				<object ref="o6"/>
+				<object ref="o7"/>
+				<object ref="o9"/>
+				<object ref="o10"/>
+				<object ref="o11"/>
+				<object ref="o12"/>
+				<object ref="o14"/>
+				<object ref="o16"/>
+			</extent>
+			<intent>
+				<attribute ref="a27"/>
+				<attribute ref="a13"/>
+			</intent>
+			<meta Intensional_stability="0.97119140625"/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o1"/>
+				<object ref="o2"/>
+				<object ref="o3"/>
+				<object ref="o4"/>
+				<object ref="o5"/>
+				<object ref="o6"/>
+				<object ref="o7"/>
+				<object ref="o8"/>
+				<object ref="o9"/>
+				<object ref="o10"/>
+				<object ref="o11"/>
+				<object ref="o12"/>
+				<object ref="o13"/>
+				<object ref="o14"/>
+				<object ref="o15"/>
+				<object ref="o16"/>
+			</extent>
+			<intent/>
+			<meta Intensional_stability="0.46875"/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o1"/>
+				<object ref="o2"/>
+				<object ref="o3"/>
+				<object ref="o6"/>
+				<object ref="o7"/>
+				<object ref="o8"/>
+				<object ref="o9"/>
+				<object ref="o10"/>
+				<object ref="o11"/>
+				<object ref="o12"/>
+				<object ref="o14"/>
+				<object ref="o16"/>
+			</extent>
+			<intent>
+				<attribute ref="a27"/>
+			</intent>
+			<meta Intensional_stability="0.5"/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o9"/>
+			</extent>
+			<intent>
+				<attribute ref="a1"/>
+				<attribute ref="a2"/>
+				<attribute ref="a45"/>
+				<attribute ref="a5"/>
+				<attribute ref="a34"/>
+				<attribute ref="a6"/>
+				<attribute ref="a38"/>
+				<attribute ref="a8"/>
+				<attribute ref="a19"/>
+				<attribute ref="a27"/>
+				<attribute ref="a20"/>
+				<attribute ref="a29"/>
+				<attribute ref="a43"/>
+				<attribute ref="a10"/>
+				<attribute ref="a11"/>
+				<attribute ref="a33"/>
+				<attribute ref="a31"/>
+				<attribute ref="a13"/>
+				<attribute ref="a41"/>
+				<attribute ref="a46"/>
+			</intent>
+			<meta Intensional_stability="0.5"/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o9"/>
+				<object ref="o5"/>
+				<object ref="o13"/>
+			</extent>
+			<intent>
+				<attribute ref="a20"/>
+				<attribute ref="a45"/>
+				<attribute ref="a43"/>
+				<attribute ref="a34"/>
+				<attribute ref="a13"/>
+			</intent>
+			<meta Intensional_stability="0.375"/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o9"/>
+				<object ref="o14"/>
+			</extent>
+			<intent>
+				<attribute ref="a20"/>
+				<attribute ref="a29"/>
+				<attribute ref="a34"/>
+				<attribute ref="a27"/>
+				<attribute ref="a11"/>
+				<attribute ref="a13"/>
+				<attribute ref="a5"/>
+			</intent>
+			<meta Intensional_stability="0.25"/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o9"/>
+				<object ref="o5"/>
+				<object ref="o13"/>
+				<object ref="o14"/>
+			</extent>
+			<intent>
+				<attribute ref="a20"/>
+				<attribute ref="a13"/>
+				<attribute ref="a34"/>
+			</intent>
+			<meta Intensional_stability="0.1875"/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o9"/>
+				<object ref="o11"/>
+			</extent>
+			<intent>
+				<attribute ref="a1"/>
+				<attribute ref="a5"/>
+				<attribute ref="a8"/>
+				<attribute ref="a27"/>
+				<attribute ref="a43"/>
+				<attribute ref="a11"/>
+				<attribute ref="a13"/>
+				<attribute ref="a46"/>
+			</intent>
+			<meta Intensional_stability="0.5"/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o2"/>
+				<object ref="o5"/>
+				<object ref="o9"/>
+				<object ref="o11"/>
+				<object ref="o13"/>
+				<object ref="o16"/>
+			</extent>
+			<intent>
+				<attribute ref="a13"/>
+				<attribute ref="a43"/>
+			</intent>
+			<meta Intensional_stability="0.65625"/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o9"/>
+				<object ref="o11"/>
+				<object ref="o14"/>
+			</extent>
+			<intent>
+				<attribute ref="a11"/>
+				<attribute ref="a27"/>
+				<attribute ref="a5"/>
+				<attribute ref="a13"/>
+			</intent>
+			<meta Intensional_stability="0.25"/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o9"/>
+				<object ref="o10"/>
+				<object ref="o11"/>
+				<object ref="o3"/>
+			</extent>
+			<intent>
+				<attribute ref="a11"/>
+				<attribute ref="a27"/>
+				<attribute ref="a8"/>
+				<attribute ref="a13"/>
+			</intent>
+			<meta Intensional_stability="0.75"/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o9"/>
+				<object ref="o10"/>
+				<object ref="o14"/>
+				<object ref="o11"/>
+				<object ref="o3"/>
+			</extent>
+			<intent>
+				<attribute ref="a11"/>
+				<attribute ref="a27"/>
+				<attribute ref="a13"/>
+			</intent>
+			<meta Intensional_stability="0.375"/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o2"/>
+				<object ref="o16"/>
+			</extent>
+			<intent>
+				<attribute ref="a3"/>
+				<attribute ref="a21"/>
+				<attribute ref="a7"/>
+				<attribute ref="a27"/>
+				<attribute ref="a42"/>
+				<attribute ref="a43"/>
+				<attribute ref="a18"/>
+				<attribute ref="a13"/>
+			</intent>
+			<meta Intensional_stability="0.75"/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o14"/>
+				<object ref="o2"/>
+				<object ref="o16"/>
+			</extent>
+			<intent>
+				<attribute ref="a27"/>
+				<attribute ref="a21"/>
+				<attribute ref="a13"/>
+			</intent>
+			<meta Intensional_stability="0.375"/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o9"/>
+				<object ref="o11"/>
+				<object ref="o2"/>
+				<object ref="o16"/>
+			</extent>
+			<intent>
+				<attribute ref="a27"/>
+				<attribute ref="a13"/>
+				<attribute ref="a43"/>
+			</intent>
+			<meta Intensional_stability="0.5625"/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o2"/>
+				<object ref="o7"/>
+				<object ref="o12"/>
+				<object ref="o16"/>
+			</extent>
+			<intent>
+				<attribute ref="a27"/>
+				<attribute ref="a3"/>
+				<attribute ref="a13"/>
+			</intent>
+			<meta Intensional_stability="0.75"/>
+		</concept>
+	</concepts>
+</conceptsystem>

@@ -9,6 +9,7 @@ from fca.readwrite import uread_xml
 
 import contextgrid
 import diagramview
+import conceptsystemgrid
 
 class TabsModel(object):
     
@@ -61,12 +62,13 @@ class TabsModel(object):
                 elif item.type == "Concepts":
                     dlg = wx.SingleChoiceDialog(
                             None, 'What do you want to do?', 'Choose variant',
-                            ["View diagram", "View concepts"], 
+                            ["View diagram", "View concepts", "Table"], 
                             wx.CHOICEDLG_STYLE
                             )
-                    what = "View concepts"
                     if dlg.ShowModal() == wx.ID_OK:
                         what = dlg.GetStringSelection()
+                    else:
+                        what = "Do nothing"
                     dlg.Destroy()
                         
                     if what == "View concepts":
@@ -83,6 +85,13 @@ class TabsModel(object):
                     elif what == "View diagram":
                         newtab = diagramview.DiagramWindow(self._tabs_view, wx.NewId())
                         newtab.canvas.SetConceptSystem(uread_xml(item.path))
+                    elif what == "Table":
+                        table = conceptsystemgrid.ConceptSystemTable(uread_xml(item.path))
+                        newtab = conceptsystemgrid.ConceptSystemGrid(self._tabs_view)
+                        newtab.SetTable(table)
+                    elif what == "Do nothing":
+                        self._opened_files.pop()
+                        return
                 else:
                     newtab = wx.TextCtrl(self._tabs_view, -1, "", size=(200, 100), 
                                      style=wx.TE_MULTILINE|wx.TE_READONLY)

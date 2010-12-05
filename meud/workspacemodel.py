@@ -58,13 +58,13 @@ class WorkspaceModel(object):
     def ImportFile(self, path, parent):
         (head, tail) = os.path.split(path)
         dst = os.path.join(self._path, parent.path)
-        if path == os.path.join(dst, tail):
+        newpath = os.path.join(unicode(dst, "utf-8"), tail)
+        if path == newpath:
             newitem = self.AddFile(path)
             self.SaveWorkspace()
         else:
-            shutil.copy(path, dst)
+            shutil.copy(path, unicode(dst, "utf-8"))
             # TODO
-            newpath = os.path.join(dst, tail)
             newitem = WorkspaceItem(tail, newpath, False, parent)
             self.SaveWorkspace()
         return newitem

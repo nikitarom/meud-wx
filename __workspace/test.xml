@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<conceptsystem>
+	<objects>
+		<object id="o1">
+			МИХАИЛ РЕМИЗОВ
+		</object>
+		<object id="o2">
+			ГЛЕБ ПАВЛОВСКИЙ
+		</object>
+		<object id="o3">
+			ЛЕВ ЯКОБСОН
+		</object>
+		<object id="o4">
+			СЕРГЕЙ МАРКОВ
+		</object>
+		<object id="o5">
+			ВЛАДИМИР ПАНТИН
+		</object>
+		<object id="o6">
+			ВАЛЕРИЙ СОЛОВЕЙ
+		</object>
+		<object id="o7">
+			ВЛАДИМИР ЖАРИХИН
+		</object>
+		<object id="o8">
+			ИОСИФ ДИСКИН
+		</object>
+	</objects>
+	<attributes>
+		<attribute id="a1">
+			КАКОВА ОПТИМАЛЬНАЯ МОДЕЛЬ ПОЛИТИЧЕСКОГО УСТРОЙСТВА РОССИИ?
+		</attribute>
+		<attribute id="a2">
+			&quot;&quot;&quot;Так что же такое демократия?&quot;&quot; &quot;
+		</attribute>
+		<attribute id="a3">
+			КАК ВЕРНУТЬ РОССИЮ НА ЛИДЕРСКИЕ ПОЗИЦИИ В МИРОВОЙ НАУКЕ?
+		</attribute>
+		<attribute id="a4">
+			&quot;&quot;&quot;Кем будет Путин?&quot;&quot;&quot;
+		</attribute>
+		<attribute id="a5">
+			&quot;&quot;&quot;Что есть Россия?&quot;&quot;&quot;
+		</attribute>
+		<attribute id="a6">
+			Смешное в политике
+		</attribute>
+		<attribute id="a7">
+			Внешняя политика России: как развить успех 2006 года?
+		</attribute>
+		<attribute id="a8">
+			&quot;&quot;&quot;Интеллектуальная собственность: вокруг чего ведутся дискуссии?&quot;&quot;&quot;
+		</attribute>
+		<attribute id="a9">
+			&quot;&quot;&quot;Как обеспечить глобальное лидерство России?&quot;&quot;&quot;
+		</attribute>
+		<attribute id="a10">
+			КАК СПАСТИ СРЕДНИЙ КЛАСС ВО ВРЕМЯ КРИЗИСА?
+		</attribute>
+		<attribute id="a11">
+			ОТ 1968 К 2008-МУ. ПОЛИТИЧЕСКИЕ КРИЗИСЫ. НОРМА ИЛИ ИСКЛЮЧЕНИЯ?
+		</attribute>
+		<attribute id="a12">
+			ГДЕ ЛЕЖАТ СТРАТЕГИЧЕСКИЕ ПУТИ ВЫХОДА ИЗ ЭКОНОМИЧЕСКОГО КРИЗИСА?
+		</attribute>
+		<attribute id="a13">
+			Что есть Россия?
+		</attribute>
+		<attribute id="a14">
+			КАК ИЗМЕНИЛАСЬ ПОЛИТИЧЕСКАЯ СИСТЕМА РОССИИ ЗА ПОСЛЕДНИЕ ПЯТНАДЦАТЬ ЛЕТ?
+		</attribute>
+		<attribute id="a15">
+			ГЛОБАЛИЗАЦИЯ И НАЦИОНАЛЬНЫЕ ИНТЕРЕСЫ: ГДЕ ТОЧКИ СОПРИКОСНОВЕНИЯ?
+		</attribute>
+		<attribute id="a16">
+			ЦИВИЛИЗАЦИОННЫЙ СЛОМ: ИЛЛЮЗИЯ ИЛИ РЕАЛЬНОСТЬ?
+		</attribute>
+		<attribute id="a17">
+			&quot;&quot;&quot;Как вернуть Россию на лидерские позиции в мировой науке?&quot;&quot;&quot;
+		</attribute>
+		<attribute id="a18">
+			&quot;&quot;&quot;Есть ли у России союзники?&quot;&quot;&quot;
+		</attribute>
+		<attribute id="a19">
+			КАК ПОБЕДИТЬ ТЕРРОРИЗМ И СЕПАРАТИЗМ?
+		</attribute>
+		<attribute id="a20">
+			&quot;&quot;&quot;Как нам сегодня оценивать Октябрьскую революцию?&quot;&quot;&quot;
+		</attribute>
+		<attribute id="a21">
+			ЧТО ЖДАТЬ РОССИИ ОТ РЕЗУЛЬТАТОВ ПРЕЗИДЕНТСКИХ ВЫБОРОВ НА УКРАИНЕ?
+		</attribute>
+		<attribute id="a22">
+			ВЛАДИМИР ЛЕНИН: ПОЛИТИЧЕСКИЙ ГЕНИЙ ИЛИ АВАНТЮРИСТ?
+		</attribute>
+		<attribute id="a23">
+			&quot;ПОСТСОВЕТСКОЕ ПРОСТРАНСТВО: СТАРЫЕ ПРОБЛЕМЫ; НОВЫЕ РЕАЛИИ&quot;
+		</attribute>
+		<attribute id="a24">
+			С чем приходит постдемократия?
+		</attribute>
+		<attribute id="a25">
+			РУССКАЯ ПОЛИТИЧЕСКАЯ СИСТЕМА: РЕАЛЬНОСТЬ ИЛИ МИФ?
+		</attribute>
+		<attribute id="a26">
+			ЮЖНАЯ ОСЕТИЯ И АБХАЗИЯ: ЧТО ДАЛЬШЕ?
+		</attribute>
+		<attribute id="a27">
+			Как модернизировать Россию?
+		</attribute>
+		<attribute id="a28">
+			&quot;&quot;&quot;Образование: где выход из тупика?&quot;&quot;&quot;
+		</attribute>
+		<attribute id="a29">
+			ЭКОНОМИЧЕСКИЕ ВОЛНЫ: ОТ ПРОГНОЗОВ К РЕШЕНИЯМ
+		</attribute>
+		<attribute id="a30">
+			ПРЕЗИДЕНТСКОЕ ПОСЛАНИЕ-2008: КАКОВЫ ПЕРСПЕКТИВЫ РЕАЛИЗАЦИИ?
+		</attribute>
+		<attribute id="a31">
+			ЭКОНОМИЧЕСКИЙ КРИЗИС. СБЫЛИСЬ ЛИ ПРОГНОЗЫ ПРОШЛОГО ГОДА?
+		</attribute>
+		<attribute id="a32">
+			ГДЕ И КАК РАСТЕТ ДЕМОКРАТИЯ СНИЗУ?
+		</attribute>
+		<attribute id="a33">
+			РОССИЙСКИЙ КОНСЕРВАТИЗМ: ДЛЯ ЕДИНОЙ РОССИИ ИЛИ ДЛЯ ВСЕЙ РОССИИ?
+		</attribute>
+		<attribute id="a34">
+			&quot;&quot;&quot;Кавказ: третья сила - опасность или благо?&quot;&quot;&quot;
+		</attribute>
+		<attribute id="a35">
+			Чьи интересы отражает избирательная система России?
+		</attribute>
+		<attribute id="a36">
+			&quot;&quot;&quot;Какова иерархия ценностей в современном мире?&quot;&quot;&quot;
+		</attribute>
+		<attribute id="a37">
+			&quot;&quot;&quot;Повестка дня для нового президента России: в чем особенность?&quot;&quot; &quot;
+		</attribute>
+		<attribute id="a38">
+			&quot;&quot;&quot;Как перевести энергию кризиса в эффективную модернизацию?&quot;&quot; &quot;
+		</attribute>
+	</attributes>
+	<concepts>
+		<concept>
+			<extent/>
+			<intent>
+				<attribute ref="a1"/>
+				<attribute ref="a2"/>
+				<attribute ref="a3"/>
+				<attribute ref="a4"/>
+				<attribute ref="a5"/>
+				<attribute ref="a6"/>
+				<attribute ref="a7"/>
+				<attribute ref="a8"/>
+				<attribute ref="a9"/>
+				<attribute ref="a10"/>
+				<attribute ref="a11"/>
+				<attribute ref="a12"/>
+				<attribute ref="a13"/>
+				<attribute ref="a14"/>
+				<attribute ref="a15"/>
+				<attribute ref="a16"/>
+				<attribute ref="a17"/>
+				<attribute ref="a18"/>
+				<attribute ref="a19"/>
+				<attribute ref="a20"/>
+				<attribute ref="a21"/>
+				<attribute ref="a22"/>
+				<attribute ref="a23"/>
+				<attribute ref="a24"/>
+				<attribute ref="a25"/>
+				<attribute ref="a26"/>
+				<attribute ref="a27"/>
+				<attribute ref="a28"/>
+				<attribute ref="a29"/>
+				<attribute ref="a30"/>
+				<attribute ref="a31"/>
+				<attribute ref="a32"/>
+				<attribute ref="a33"/>
+				<attribute ref="a34"/>
+				<attribute ref="a35"/>
+				<attribute ref="a36"/>
+				<attribute ref="a37"/>
+				<attribute ref="a38"/>
+			</intent>
+			<meta/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o1"/>
+			</extent>
+			<intent>
+				<attribute ref="a1"/>
+				<attribute ref="a25"/>
+				<attribute ref="a33"/>
+				<attribute ref="a13"/>
+			</intent>
+			<meta/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o2"/>
+			</extent>
+			<intent>
+				<attribute ref="a25"/>
+				<attribute ref="a7"/>
+				<attribute ref="a37"/>
+				<attribute ref="a1"/>
+				<attribute ref="a18"/>
+				<attribute ref="a5"/>
+			</intent>
+			<meta/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o1"/>
+				<object ref="o2"/>
+			</extent>
+			<intent>
+				<attribute ref="a1"/>
+				<attribute ref="a25"/>
+			</intent>
+			<meta/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o4"/>
+				<object ref="o7"/>
+			</extent>
+			<intent>
+				<attribute ref="a23"/>
+				<attribute ref="a21"/>
+			</intent>
+			<meta/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o1"/>
+				<object ref="o2"/>
+				<object ref="o3"/>
+				<object ref="o4"/>
+				<object ref="o5"/>
+				<object ref="o6"/>
+				<object ref="o7"/>
+				<object ref="o8"/>
+			</extent>
+			<intent/>
+			<meta/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o3"/>
+			</extent>
+			<intent>
+				<attribute ref="a8"/>
+				<attribute ref="a27"/>
+				<attribute ref="a31"/>
+				<attribute ref="a12"/>
+				<attribute ref="a32"/>
+			</intent>
+			<meta/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o4"/>
+			</extent>
+			<intent>
+				<attribute ref="a23"/>
+				<attribute ref="a2"/>
+				<attribute ref="a34"/>
+				<attribute ref="a24"/>
+				<attribute ref="a15"/>
+				<attribute ref="a30"/>
+				<attribute ref="a4"/>
+				<attribute ref="a5"/>
+				<attribute ref="a14"/>
+				<attribute ref="a25"/>
+				<attribute ref="a33"/>
+				<attribute ref="a37"/>
+				<attribute ref="a26"/>
+				<attribute ref="a21"/>
+				<attribute ref="a28"/>
+			</intent>
+			<meta/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o4"/>
+				<object ref="o1"/>
+			</extent>
+			<intent>
+				<attribute ref="a25"/>
+				<attribute ref="a33"/>
+			</intent>
+			<meta/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o4"/>
+				<object ref="o2"/>
+			</extent>
+			<intent>
+				<attribute ref="a37"/>
+				<attribute ref="a25"/>
+				<attribute ref="a5"/>
+			</intent>
+			<meta/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o4"/>
+				<object ref="o2"/>
+				<object ref="o1"/>
+			</extent>
+			<intent>
+				<attribute ref="a25"/>
+			</intent>
+			<meta/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o5"/>
+			</extent>
+			<intent>
+				<attribute ref="a29"/>
+				<attribute ref="a22"/>
+			</intent>
+			<meta/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o6"/>
+			</extent>
+			<intent>
+				<attribute ref="a10"/>
+				<attribute ref="a11"/>
+				<attribute ref="a13"/>
+				<attribute ref="a1"/>
+				<attribute ref="a19"/>
+				<attribute ref="a16"/>
+				<attribute ref="a20"/>
+				<attribute ref="a6"/>
+			</intent>
+			<meta/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o1"/>
+				<object ref="o6"/>
+			</extent>
+			<intent>
+				<attribute ref="a1"/>
+				<attribute ref="a13"/>
+			</intent>
+			<meta/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o1"/>
+				<object ref="o2"/>
+				<object ref="o6"/>
+			</extent>
+			<intent>
+				<attribute ref="a1"/>
+			</intent>
+			<meta/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o8"/>
+			</extent>
+			<intent>
+				<attribute ref="a9"/>
+				<attribute ref="a10"/>
+				<attribute ref="a12"/>
+				<attribute ref="a32"/>
+				<attribute ref="a24"/>
+				<attribute ref="a31"/>
+				<attribute ref="a38"/>
+				<attribute ref="a17"/>
+				<attribute ref="a3"/>
+				<attribute ref="a35"/>
+				<attribute ref="a23"/>
+				<attribute ref="a36"/>
+				<attribute ref="a37"/>
+				<attribute ref="a27"/>
+				<attribute ref="a19"/>
+			</intent>
+			<meta/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o4"/>
+				<object ref="o7"/>
+				<object ref="o8"/>
+			</extent>
+			<intent>
+				<attribute ref="a23"/>
+			</intent>
+			<meta/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o3"/>
+				<object ref="o8"/>
+			</extent>
+			<intent>
+				<attribute ref="a31"/>
+				<attribute ref="a27"/>
+				<attribute ref="a12"/>
+				<attribute ref="a32"/>
+			</intent>
+			<meta/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o4"/>
+				<object ref="o8"/>
+			</extent>
+			<intent>
+				<attribute ref="a24"/>
+				<attribute ref="a23"/>
+				<attribute ref="a37"/>
+			</intent>
+			<meta/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o4"/>
+				<object ref="o2"/>
+				<object ref="o8"/>
+			</extent>
+			<intent>
+				<attribute ref="a37"/>
+			</intent>
+			<meta/>
+		</concept>
+		<concept>
+			<extent>
+				<object ref="o8"/>
+				<object ref="o6"/>
+			</extent>
+			<intent>
+				<attribute ref="a19"/>
+				<attribute ref="a10"/>
+			</intent>
+			<meta/>
+		</concept>
+	</concepts>
+</conceptsystem>
