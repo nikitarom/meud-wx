@@ -26,7 +26,10 @@ icons = {
 "HDir" : "img/fugue/folder-horizontal.png",
 "OpenHDir" : "img/fugue/folder-horizontal-open.png",
 "Image" : "img/fugue/document-image.png",
-"Unknown" : "img/fugue/document.png"
+"Unknown" : "img/fugue/document.png",
+"Dummy" : "img/fugue/keyboard.png",
+"Minus" : "img/fugue/minus.png",
+"Plus" : "img/fugue/plus.png"
 }
 
 bitmaps = {}

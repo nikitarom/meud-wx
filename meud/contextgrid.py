@@ -159,10 +159,10 @@ class ContextTable(wx.grid.PyGridTableBase):
         if (row > 0) and (col > 0):
             self.context[row-1][col-1] = (int(value) == 1)
         elif (col == 0) and (row > 0):
-            self.context.objects[row-1] = str(value)
+            self.context.objects[row-1] = unicode(value)
             self.DoUnsaved()
         elif (row == 0) and (col > 0):
-            self.context.attributes[col-1] = str(value)
+            self.context.attributes[col-1] = unicode(value)
             self.DoUnsaved()
             
     def SaveAs(self, path):

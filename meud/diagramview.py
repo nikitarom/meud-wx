@@ -1,4 +1,6 @@
 # TODO: Add export to SVG
+import os.path
+
 import wx
 
 import images
@@ -40,58 +42,82 @@ class ConceptNode(object):
         self._pos = pos
         self._concept = concept
         self._t_labels = top_labels
-        self._b_labels = [str(len(bottom_labels))]
+        self._b_labels = bottom_labels
+        self.CIRCLE_RADIUS = 14
         
     def draw(self, dc):
         if self.is_highlighted:
-            dc.SetPen(wx.RED_PEN)
+            pen = wx.RED_PEN
         else:
-            dc.SetPen(wx.BLACK_PEN)
-        CIRCLE_RADIUS = 10
-        dc.SetBrush(wx.Brush("BLUE"))
-        dc.DrawCircle(self.X, self.Y, CIRCLE_RADIUS)
+            pen = wx.BLACK_PEN
+        pen.SetWidth(2)
+        dc.SetPen(pen)
+        
+        brush = wx.Brush(wx.Color(67, 110, 234))
+        dc.SetBrush(brush)
+        dc.DrawCircle(self.X, self.Y, self.CIRCLE_RADIUS)
         
         h_step = dc.GetCharHeight()
-        rect_width = 0
-        for i in range(len(self._t_labels)):
-            lwidth, lheight, ldescent, el = \
-                                dc.GetFullTextExtent(self._t_labels[i])
-            if lwidth > rect_width:
-                rect_width = lwidth
-        dc.SetPen(wx.BLACK_PEN)
-        dc.SetBrush(wx.Brush("WHITE"))
-        dc.DrawRectangle(self.X - rect_width / 2 - 3, 
-                         self.Y - h_step * len(self._t_labels) - 10, 
-                         rect_width + 6,
-                         h_step * len(self._t_labels) + 2)
+        
+        if len(self._t_labels) != 0:
+            # TODO:
+            _t_labels = self._t_labels
+            
+            rect_width = 0
+            for i in range(len(_t_labels)):
+                lwidth, lheight, ldescent, el = \
+                                    dc.GetFullTextExtent(_t_labels[i])
+                if lwidth > rect_width:
+                    rect_width = lwidth
+            
+            pen = wx.BLACK_PEN
+            pen.SetWidth(1)
+            dc.SetPen(pen)
+            dc.SetBrush(wx.Brush("WHITE"))
+            dc.DrawRectangle(self.X - rect_width / 2 - 3, 
+                             self.Y - h_step * len(_t_labels) - self.CIRCLE_RADIUS, 
+                             rect_width + 6,
+                             h_step * len(_t_labels) + 2)
                          
-        for i in range(len(self._t_labels)):
-            horizontal_offset = rect_width / 2
-            dc.DrawText(self._t_labels[i], self.X - horizontal_offset, 
-                self.Y - 25 - h_step*i)
+            for i in range(len(_t_labels)):
+                horizontal_offset = rect_width / 2
+                dc.DrawText(_t_labels[i], self.X - horizontal_offset, 
+                    self.Y - self.CIRCLE_RADIUS - h_step * (i + 1))
+        
+        if len(self._b_labels) != 0:
+            # TODO:
+            _b_labels = self._b_labels        
                 
-        rect_width = 0
-        for i in range(len(self._b_labels)):
-            lwidth, lheight, ldescent, el = \
-                                dc.GetFullTextExtent(self._b_labels[i])
-            if lwidth > rect_width:
-                rect_width = lwidth
-        dc.SetBrush(wx.Brush("WHITE"))
-        dc.DrawRectangle(self.X - rect_width / 2 - 3, 
-                         self.Y + 8, 
-                         rect_width + 6,
-                         h_step * len(self._b_labels) + 2)
+            rect_width = 0
+            for i in range(len(_b_labels)):
+                lwidth, lheight, ldescent, el = \
+                                    dc.GetFullTextExtent(_b_labels[i])
+                if lwidth > rect_width:
+                    rect_width = lwidth
+            pen = wx.BLACK_PEN
+            pen.SetWidth(1)
+            dc.SetPen(pen)
+            dc.SetBrush(wx.Brush("WHITE"))
+            dc.DrawRectangle(self.X - rect_width / 2 - 3, 
+                             self.Y + self.CIRCLE_RADIUS - 2, 
+                             rect_width + 6,
+                             h_step * len(_b_labels) + 2)
 
-        for i in range(len(self._b_labels)):
-            horizontal_offset = rect_width / 2
-            dc.DrawText(self._b_labels[i], self.X - horizontal_offset, 
-                self.Y + 10 + h_step*i)
+            for i in range(len(_b_labels)):
+                horizontal_offset = rect_width / 2
+                dc.DrawText(_b_labels[i], self.X - horizontal_offset, 
+                    self.Y + self.CIRCLE_RADIUS + h_step*i)
         
     def hit_test(self, x, y):
-        if ((x-self.X) ** 2 + (y - self.Y) ** 2) <= 10 * 10:
+        if ((x-self.X) ** 2 + (y - self.Y) ** 2) <= self.CIRCLE_RADIUS * self.CIRCLE_RADIUS:
             return True
         else:
             return False
+            
+    def set_labels(self, top_labels, bottom_labels):
+        """docstring for set_labels"""
+        self._t_labels = top_labels
+        self._b_labels = bottom_labels
         
 
 class MyCanvas(wx.ScrolledWindow):
@@ -107,11 +133,40 @@ class MyCanvas(wx.ScrolledWindow):
         self.Bind(wx.EVT_MOUSE_EVENTS, self.OnMouse)
         self.Bind(wx.EVT_SIZE, self.OnSize)
         
+        self._show_full_extent = True
+        self._show_full_intent = True
+        
+        # TODO:
+        font = wx.SystemSettings.GetFont(wx.SYS_SYSTEM_FONT)
+        self._font_size = font.GetPointSize()
+        
+    def ChangeExtentLabelView(self):
+        self._show_full_extent = not self._show_full_extent
+        self.RedrawLabels()
+        
+    def ChangeIntentLabelView(self):
+        self._show_full_intent = not self._show_full_intent
+        self.RedrawLabels()
+        
+    def RedrawLabels(self):
+        """docstring for RedrawLabels"""
+        for node in self.nodes:
+            if self._show_full_extent:
+                b_labels = self._own_objects[node._concept]
+            else:
+                b_labels = [str(len(node._concept.extent))]
+            if self._show_full_intent:
+                t_labels = self._own_attributes[node._concept]
+            else:
+                t_labels = [str(len(node._concept.intent))]
+            node.set_labels(t_labels, b_labels)
+        self.Refresh()
+        
     def SetConceptSystem(self, cl):
         self.cs = cl
         self._positions = get_coordinates(cl)
-        own_objects = find_own_objects(cl)
-        own_attributes = find_own_attributes(cl)
+        self._own_objects = find_own_objects(cl)
+        self._own_attributes = find_own_attributes(cl)
         
         self.nodes = []
         
@@ -119,8 +174,16 @@ class MyCanvas(wx.ScrolledWindow):
         for concept in cl:
             new_coords = (10 + self._positions[concept][0] * (size[0] - 20),
             size[1] - 10 - self._positions[concept][1] * (size[1] - 20))
-            self.nodes.append(ConceptNode(concept, new_coords, own_attributes[concept],
-                                concept.extent))
+            if self._show_full_extent:
+                b_labels = self._own_objects[concept]
+            else:
+                b_labels = str(len(concept.extent))
+            if self._show_full_intent:
+                t_labels = self._own_attributes[concept]
+            else:
+                t_labels = str(len(concept.intent))
+            self.nodes.append(ConceptNode(concept, new_coords, t_labels,
+                                b_labels))
         
         self.lines = []
         for i in range(len(cl)):
@@ -137,11 +200,17 @@ class MyCanvas(wx.ScrolledWindow):
         dc.SetBackground(bg)
         dc.Clear()
         
+        font = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
+        font.SetPointSize(self._font_size)
+        dc.SetFont(font)
+        
         for line in self.lines:
             if line[0].is_highlighted and line[1].is_highlighted:
-                dc.SetPen(wx.RED_PEN)
+                pen = wx.RED_PEN
             else:
-                dc.SetPen(wx.BLACK_PEN)
+                pen = wx.BLACK_PEN
+            pen.SetWidth(2)
+            dc.SetPen(pen)
             dc.DrawLine(line[0].X, line[0].Y, line[1].X, line[1].Y)
             
         for node in self.nodes:
@@ -263,13 +332,14 @@ class MyCanvas(wx.ScrolledWindow):
         
 class DiagramWindow(wx.Panel):
     
-    def __init__(self, parent, id):
+    def __init__(self, parent, id, filename):
         """docstring for __init__"""
         wx.Panel.__init__(self, parent, -1)
         self.canvas = MyCanvas(self, -1)
         
         self.toolBar = self.CreateToolBar()
         self.toolBar.Realize()
+        self.filename = filename
         
     def CreateToolBar(self):
         tb = wx.ToolBar(self)
@@ -281,13 +351,53 @@ class DiagramWindow(wx.Panel):
         tool = tb.AddLabelTool(wx.NewId(), "Save", images.GetBitmap("Save"),
                 shortHelp="Save image")
         self.Bind(wx.EVT_TOOL, self.OnSave, tool)
+        
+        tool = tb.AddLabelTool(wx.NewId(), "Objects", 
+                               images.GetBitmap("Dummy"),
+                               shortHelp="Toggle extent label view")
+        self.Bind(wx.EVT_TOOL, self.OnToggleExtentView, tool)
+        
+        tool = tb.AddLabelTool(wx.NewId(), "Attributes", 
+                               images.GetBitmap("Dummy"),
+                               shortHelp="Toggle intent label view")
+        self.Bind(wx.EVT_TOOL, self.OnToggleIntentView, tool)
+        
+        tool = tb.AddLabelTool(wx.NewId(), "Increase font size", 
+                               images.GetBitmap("Plus"),
+                               shortHelp="Increase font size")
+        self.Bind(wx.EVT_TOOL, self.OnIncreaseFontSize, tool)
+        
+        tool = tb.AddLabelTool(wx.NewId(), "Decrease font size", 
+                               images.GetBitmap("Minus"),
+                               shortHelp="Decrease font size")
+        self.Bind(wx.EVT_TOOL, self.OnDecreaseFontSize, tool)
 
         return tb
         
+    def OnIncreaseFontSize(self, event):
+        """docstring for OnIncreaseFontSize"""
+        self.canvas._font_size += 1
+        self.canvas.Refresh()
+        
+    def OnDecreaseFontSize(self, event):
+        if self.canvas._font_size - 1 > 4:
+            self.canvas._font_size -= 1
+            self.canvas.Refresh()
+        
+    def OnToggleExtentView(self, event):
+        """docstring for OnToggleExtentView"""
+        self.canvas.ChangeExtentLabelView()
+        
+    def OnToggleIntentView(self, event):
+        """docstring for OnToggleIntentView"""
+        self.canvas.ChangeIntentLabelView()
+        
     def OnSave(self, event):
+        head, tail = os.path.split(self.filename)
+        default_file = "".join([tail[:-3], "png"])
         dlg = wx.FileDialog(self, "Choose a file name to save the image as a PNG to",
                             defaultDir = "",
-                            defaultFile = "",
+                            defaultFile = default_file,
                             wildcard = "*.png",
                             style=wx.SAVE)
         if dlg.ShowModal() == wx.ID_OK:
