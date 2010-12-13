@@ -137,8 +137,10 @@ class MyCanvas(wx.ScrolledWindow):
         self._show_full_intent = True
         
         # TODO:
-        font = wx.SystemSettings.GetFont(wx.SYS_SYSTEM_FONT)
+        font = wx.Font(12, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL,
+                            wx.FONTWEIGHT_NORMAL)
         self._font_size = font.GetPointSize()
+        self._base_size = self._font_size + 1
         
     def ChangeExtentLabelView(self):
         self._show_full_extent = not self._show_full_extent
@@ -293,7 +295,93 @@ class MyCanvas(wx.ScrolledWindow):
             if pos[1] < self.nodes[i].Y:
                 return False
         return True
+    
+    def saveSVG(self, path):
+        """docstring for saveSVG"""
+        NODE_RADIUS = 14
+        dcSource = wx.PaintDC(self)
         
+        import pysvg
+        s = pysvg.svg()
+        
+        sb = pysvg.ShapeBuilder()
+        
+        for line in self.lines:
+            element = sb.createLine(line[0].X, 
+                                    line[0].Y, 
+                                    line[1].X, 
+                                    line[1].Y,
+                                    strokewidth=2,
+                                    stroke="black")
+            s.addElement(element)
+        
+        h_step = self._font_size
+        font_style = pysvg.StyleBuilder()
+        font_style.setFontFamily(fontfamily="sans-serif")
+        font_style.setFontSize("{0}".format(self._font_size))
+        font_style.setFilling("black")
+        
+        for node in self.nodes:
+            s.addElement(sb.createCircle(node.X, node.Y, NODE_RADIUS,
+                            strokewidth=2, fill='#436EEA'))
+            if len(node._t_labels) != 0:
+                # TODO:
+                _t_labels = node._t_labels
+
+                rect_width = 0
+                for i in range(len(_t_labels)):
+                    lwidth, lheight, ldescent, el = \
+                                    dcSource.GetFullTextExtent(_t_labels[i])
+                    if lwidth > rect_width:
+                        rect_width = lwidth * self._font_size / self._base_size
+                
+                horizontal_offset = rect_width / 2
+                    
+                element = sb.createRect(node.X - rect_width / 2 - 3, 
+                                        node.Y - h_step * len(_t_labels) - NODE_RADIUS, 
+                                        rect_width + 6, 
+                                        h_step * len(_t_labels) + 2,
+                                        strokewidth=1,
+                                        stroke="black",
+                                        fill="white")
+                s.addElement(element)
+ 
+                for i in range(len(_t_labels)):
+                    t = pysvg.text(_t_labels[i], node.X - horizontal_offset,
+                            node.Y - NODE_RADIUS - h_step * i)
+                    t.set_style(font_style.getStyle())
+                    s.addElement(t)
+
+            if len(node._b_labels) != 0:
+                # TODO:
+                _b_labels = node._b_labels        
+
+                rect_width = 0
+                for i in range(len(_b_labels)):
+                    lwidth, lheight, ldescent, el = \
+                                        dcSource.GetFullTextExtent(_b_labels[i])
+                    if lwidth > rect_width:
+                        rect_width = lwidth * self._font_size / self._base_size
+                
+                horizontal_offset = rect_width / 2
+
+                element = sb.createRect(node.X - rect_width / 2 - 3, 
+                                        node.Y + NODE_RADIUS - 2, 
+                                        rect_width + 6, 
+                                        h_step * len(_b_labels) + 2,
+                                        strokewidth=1,
+                                        stroke="black",
+                                        fill="white")
+                s.addElement(element)
+
+                for i in range(len(_b_labels)):
+                    t = pysvg.text(unicode(_b_labels[i]), node.X - horizontal_offset,
+                            node.Y + NODE_RADIUS + h_step * (i + 0.8))
+                    t.set_style(font_style.getStyle())
+                    s.addElement(t)           
+                            
+        s.save(path)
+    
     def saveSnapshot(self, path):
         dcSource = wx.PaintDC(self)
         
@@ -398,10 +486,13 @@ class DiagramWindow(wx.Panel):
         dlg = wx.FileDialog(self, "Choose a file name to save the image as a PNG to",
                             defaultDir = "",
                             defaultFile = default_file,
-                            wildcard = "*.png",
+                            wildcard = "PNG files (*.png)|*.png|SVG files (*.svg)|*.svg",
                             style=wx.SAVE)
         if dlg.ShowModal() == wx.ID_OK:
-            self.canvas.saveSnapshot(dlg.GetPath())
+            if dlg.GetFilterIndex() == 0:
+                self.canvas.saveSnapshot(dlg.GetPath())
+            else:
+                self.canvas.saveSVG(dlg.GetPath())
         dlg.Destroy()
         
         
