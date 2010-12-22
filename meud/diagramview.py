@@ -1,4 +1,4 @@
-# TODO: Add export to SVG
+# TODO: Move labels, when delete node
 import os.path
 
 import wx
@@ -137,7 +137,7 @@ class MyCanvas(wx.ScrolledWindow):
         self._show_full_intent = True
         
         # TODO:
-        font = wx.Font(12, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL,
+        font = wx.Font(14, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL,
                             wx.FONTWEIGHT_NORMAL)
         self._font_size = font.GetPointSize()
         self._base_size = self._font_size + 1
@@ -283,6 +283,21 @@ class MyCanvas(wx.ScrolledWindow):
                 self.Refresh()
             if event.LeftUp():     
                 self._dragged = None
+        elif event.RightDown():
+            (x, y) = (event.GetX(), event.GetY())
+            for node in self.nodes:
+                if node.hit_test(x, y):
+                    for n in self.nodes:
+                        n.is_highlighted = False
+                    self.nodes.remove(node)
+                    self.cs.remove(node.concept)
+                    self.lines = []
+                    for i in range(len(self.cs)):
+                        for concept in self.cs.children(self.cs[i]):
+                            j = self.cs.index(concept)
+                            self.lines.append((self.nodes[i], self.nodes[j]))
+                    break
+            self.Refresh()
                 
     def TryDrag(self, pos):
         concept = self._dragged.concept
