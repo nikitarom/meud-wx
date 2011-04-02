@@ -4,6 +4,7 @@ import os.path
 import wx
 
 import images
+import subprocess
 from globals_ import dot_path as graphviz_path
 
 class ConceptNode(object):
@@ -553,13 +554,16 @@ def get_coordinates(concept_system):
     from fca.readwrite import uwrite_dot
     uwrite_dot(concept_system, temp_dot_path)
     
-    dot_path = os.path.join(graphviz_path, "dot")
     try:
-        os.spawnl(os.P_WAIT, dot_path, "dot", "-Tplain",
-                "-o{0}".format(temp_plain_path), temp_dot_path)
+        dot_path = os.path.join(graphviz_path, "dot")
+        subprocess.call([dot_path, "-Tplain", 
+                        "-o{0}".format(temp_plain_path),
+                        temp_dot_path])
     except:
-        print "Dot error!"
-        return
+        dot_path = os.path.join(graphviz_path, "dot.exe")
+        subprocess.call([dot_path, "-Tplain", 
+                        "-o{0}".format(temp_plain_path),
+                        temp_dot_path])
     
     import codecs
     plain_dot_file = codecs.open(temp_plain_path, "r", "utf-8")
