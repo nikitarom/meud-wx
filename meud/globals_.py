@@ -14,6 +14,7 @@ if not workspace_path:
     import codecs
     pth_file = codecs.open("workspace.pth", "r", "utf-8")
     workspace_path = pth_file.readline()
+    dot_path = pth_file.readline()
     
 plugins_path = r"meud/plugins"
 

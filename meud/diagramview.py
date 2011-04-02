@@ -4,6 +4,7 @@ import os.path
 import wx
 
 import images
+from globals_ import dot_path as graphviz_path
 
 class ConceptNode(object):
     
@@ -140,7 +141,7 @@ class MyCanvas(wx.ScrolledWindow):
         font = wx.Font(14, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL,
                             wx.FONTWEIGHT_NORMAL)
         self._font_size = font.GetPointSize()
-        self._base_size = self._font_size + 1
+        self._base_size = self._font_size - 1
         
     def ChangeExtentLabelView(self):
         self._show_full_extent = not self._show_full_extent
@@ -544,7 +545,6 @@ def get_coordinates(concept_system):
     import tempfile
     import os
     import fca
-    graphviz_path = "/usr/local/bin/"
     temp_dot_path = tempfile.mktemp()
     temp_plain_path = tempfile.mktemp()
     
