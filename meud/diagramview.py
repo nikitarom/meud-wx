@@ -1,11 +1,14 @@
 # TODO: Move labels, when delete node
 import os.path
 
+from fca import write_xml
+
 import wx
 
 import images
 import subprocess
 from globals_ import dot_path as graphviz_path
+from fca.readwrite import uread_xml
 
 class ConceptNode(object):
     
@@ -52,10 +55,11 @@ class ConceptNode(object):
             pen = wx.RED_PEN
         else:
             pen = wx.BLACK_PEN
-        pen.SetWidth(2)
+        pen.SetWidth(1)
         dc.SetPen(pen)
         
-        brush = wx.Brush(wx.Color(67, 110, 234))
+        # brush = wx.Brush(wx.Color(67, 110, 234))
+        brush = wx.Brush("WHITE")
         dc.SetBrush(brush)
         dc.DrawCircle(self.X, self.Y, self.CIRCLE_RADIUS)
         
@@ -72,19 +76,21 @@ class ConceptNode(object):
                 if lwidth > rect_width:
                     rect_width = lwidth
             
-            pen = wx.BLACK_PEN
+            pen = wx.WHITE_PEN
             pen.SetWidth(1)
             dc.SetPen(pen)
             dc.SetBrush(wx.Brush("WHITE"))
-            dc.DrawRectangle(self.X - rect_width / 2 - 3, 
-                             self.Y - h_step * len(_t_labels) - self.CIRCLE_RADIUS, 
-                             rect_width + 6,
-                             h_step * len(_t_labels) + 2)
+            # dc.DrawRectangle(self.X - rect_width / 2 - 3, 
+            #                  self.Y - h_step * len(_t_labels) - self.CIRCLE_RADIUS, 
+            #                  rect_width + 6,
+            #                  h_step * len(_t_labels) + 2)
                          
+            dc.SetTextBackground("WHITE")
+            dc.SetBackgroundMode(wx.SOLID)
             for i in range(len(_t_labels)):
                 horizontal_offset = rect_width / 2
                 dc.DrawText(_t_labels[i], self.X - horizontal_offset, 
-                    self.Y - self.CIRCLE_RADIUS - h_step * (i + 1))
+                    self.Y - self.CIRCLE_RADIUS - h_step * (i + 1) - 5)
         
         if len(self._b_labels) != 0:
             # TODO:
@@ -96,19 +102,20 @@ class ConceptNode(object):
                                     dc.GetFullTextExtent(_b_labels[i])
                 if lwidth > rect_width:
                     rect_width = lwidth
-            pen = wx.BLACK_PEN
+            pen = wx.WHITE_PEN
             pen.SetWidth(1)
             dc.SetPen(pen)
             dc.SetBrush(wx.Brush("WHITE"))
-            dc.DrawRectangle(self.X - rect_width / 2 - 3, 
-                             self.Y + self.CIRCLE_RADIUS - 2, 
-                             rect_width + 6,
-                             h_step * len(_b_labels) + 2)
-
+            dc.SetBackgroundMode(wx.SOLID)
+            # dc.DrawRectangle(self.X - rect_width / 2 - 3, 
+            #                  self.Y + self.CIRCLE_RADIUS - 2, 
+            #                  rect_width + 6,
+            #                  h_step * len(_b_labels) + 2)
+            dc.SetTextBackground("WHITE")
             for i in range(len(_b_labels)):
                 horizontal_offset = rect_width / 2
                 dc.DrawText(_b_labels[i], self.X - horizontal_offset, 
-                    self.Y + self.CIRCLE_RADIUS + h_step*i)
+                    self.Y + self.CIRCLE_RADIUS + h_step*i + 5)
         
     def hit_test(self, x, y):
         if ((x-self.X) ** 2 + (y - self.Y) ** 2) <= self.CIRCLE_RADIUS * self.CIRCLE_RADIUS:
@@ -127,9 +134,13 @@ class MyCanvas(wx.ScrolledWindow):
     def __init__(self, parent, id, size = wx.DefaultSize):
         wx.ScrolledWindow.__init__(self, parent, id, (0, 0),
                                     size=size, style=wx.SUNKEN_BORDER)
+        self.parent = parent
         self.SetBackgroundColour("WHITE")
         self._dragged = None
         self.cs = None
+        self.maxWidth  = 1000
+        self.maxHeight = 1000
+        self.old_size = None
         
         self.Bind(wx.EVT_PAINT, self.OnPaint)
         self.Bind(wx.EVT_MOUSE_EVENTS, self.OnMouse)
@@ -139,10 +150,15 @@ class MyCanvas(wx.ScrolledWindow):
         self._show_full_intent = True
         
         # TODO:
-        font = wx.Font(14, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL,
-                            wx.FONTWEIGHT_NORMAL)
+        font = wx.Font(14, wx.SWISS, wx.NORMAL, wx.NORMAL, False, u'Verdana')
         self._font_size = font.GetPointSize()
         self._base_size = self._font_size - 1
+        
+    def getWidth(self):
+        return self.maxWidth
+
+    def getHeight(self):
+        return self.maxHeight
         
     def ChangeExtentLabelView(self):
         self._show_full_extent = not self._show_full_extent
@@ -154,11 +170,14 @@ class MyCanvas(wx.ScrolledWindow):
         
     def RedrawLabels(self):
         """docstring for RedrawLabels"""
+        top_concept = self.cs.top_concept
+        objects_number = len(top_concept.extent)
         for node in self.nodes:
             if self._show_full_extent:
                 b_labels = self._own_objects[node._concept]
             else:
-                b_labels = [str(len(node._concept.extent))]
+                label = "{0:.0f}".format(round(len(node._concept.extent) * 100 / float(objects_number)))
+                b_labels = [label]
             if self._show_full_intent:
                 t_labels = self._own_attributes[node._concept]
             else:
@@ -166,18 +185,38 @@ class MyCanvas(wx.ScrolledWindow):
             node.set_labels(t_labels, b_labels)
         self.Refresh()
         
+    def SaveCoordinates(self):
+        for concept in self.cs:
+            for node in self.nodes:
+                if node.concept == concept:
+                    concept.meta['X'] = node.X
+                    concept.meta['Y'] = node.Y
+        
     def SetConceptSystem(self, cl):
         self.cs = cl
-        self._positions = get_coordinates(cl)
         self._own_objects = find_own_objects(cl)
         self._own_attributes = find_own_attributes(cl)
+        if cl[0].meta.has_key('X'):
+            max_x = -1
+            max_y = -1
+            for concept in cl:
+                if concept.meta['X'] > max_x:
+                    max_x = concept.meta['X']
+                if concept.meta['Y'] > max_y:
+                    max_y = concept.meta['Y']
+                size = (max_x + 20, max_y + 20)
+        else:
+            self._positions = get_coordinates(cl)
+            size = (640, 480)
         
         self.nodes = []
-        
-        size = self.GetClientSize()
+        self.old_size = size
         for concept in cl:
-            new_coords = (10 + self._positions[concept][0] * (size[0] - 20),
-            size[1] - 10 - self._positions[concept][1] * (size[1] - 20))
+            if concept.meta.has_key('X'):
+                new_coords = (concept.meta['X'], concept.meta['Y'])
+            else:
+                new_coords = (10 + self._positions[concept][0] * (size[0] - 20),
+                    size[1] - 10 - self._positions[concept][1] * (size[1] - 20))
             if self._show_full_extent:
                 b_labels = self._own_objects[concept]
             else:
@@ -194,17 +233,20 @@ class MyCanvas(wx.ScrolledWindow):
             for concept in cl.children(cl[i]):
                 j = cl.index(concept)
                 self.lines.append((self.nodes[i], self.nodes[j]))
-            
+        
     def OnPaint(self, event):
         dc = wx.BufferedPaintDC(self)
+        self.DoDrawing(dc)
+
         
+    def DoDrawing(self, dc):
         dc.BeginDrawing()
 
         bg = wx.Brush(self.GetBackgroundColour())
         dc.SetBackground(bg)
         dc.Clear()
         
-        font = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
+        font = wx.Font(14, wx.SWISS, wx.NORMAL, wx.NORMAL, False, u'Verdana')
         font.SetPointSize(self._font_size)
         dc.SetFont(font)
         
@@ -213,7 +255,7 @@ class MyCanvas(wx.ScrolledWindow):
                 pen = wx.RED_PEN
             else:
                 pen = wx.BLACK_PEN
-            pen.SetWidth(2)
+            pen.SetWidth(1)
             dc.SetPen(pen)
             dc.DrawLine(line[0].X, line[0].Y, line[1].X, line[1].Y)
             
@@ -226,9 +268,10 @@ class MyCanvas(wx.ScrolledWindow):
         if self.cs:
             size = self.GetClientSize()
             for i in range(len(self.cs)):
-                new_coords = (10 + self._positions[self.cs[i]][0] * (size[0] - 20),
-                size[1] - 10 - self._positions[self.cs[i]][1] * (size[1] - 20))
-                self.nodes[i].pos = new_coords
+                X = self.nodes[i].X * size[0] / float(self.old_size[0])
+                Y = self.nodes[i].Y * size[1] / float(self.old_size[1])
+                self.nodes[i].pos = (X, Y)
+            self.old_size = size
         
         
     def highlight_node(self, node):
@@ -334,7 +377,7 @@ class MyCanvas(wx.ScrolledWindow):
         
         h_step = self._font_size
         font_style = pysvg.StyleBuilder()
-        font_style.setFontFamily(fontfamily="sans-serif")
+        font_style.setFontFamily(fontfamily="Verdana")
         font_style.setFontSize("{0}".format(self._font_size))
         font_style.setFilling("black")
         
@@ -354,18 +397,18 @@ class MyCanvas(wx.ScrolledWindow):
                 
                 horizontal_offset = rect_width / 2
                     
-                element = sb.createRect(node.X - rect_width / 2 - 3, 
-                                        node.Y - h_step * len(_t_labels) - NODE_RADIUS, 
-                                        rect_width + 6, 
-                                        h_step * len(_t_labels) + 2,
-                                        strokewidth=1,
-                                        stroke="black",
-                                        fill="white")
-                s.addElement(element)
+                # element = sb.createRect(node.X - rect_width / 2 - 3, 
+                #                         node.Y - h_step * len(_t_labels) - NODE_RADIUS, 
+                #                         rect_width + 6, 
+                #                         h_step * len(_t_labels) + 2,
+                #                         strokewidth=1,
+                #                         stroke="black",
+                #                         fill="white")
+                # s.addElement(element)
  
                 for i in range(len(_t_labels)):
                     t = pysvg.text(_t_labels[i], node.X - horizontal_offset,
-                            node.Y - NODE_RADIUS - h_step * i)
+                            node.Y - NODE_RADIUS - h_step * i - 5)
                     t.set_style(font_style.getStyle())
                     s.addElement(t)
 
@@ -382,20 +425,20 @@ class MyCanvas(wx.ScrolledWindow):
                 
                 horizontal_offset = rect_width / 2
 
-                element = sb.createRect(node.X - rect_width / 2 - 3, 
-                                        node.Y + NODE_RADIUS - 2, 
-                                        rect_width + 6, 
-                                        h_step * len(_b_labels) + 2,
-                                        strokewidth=1,
-                                        stroke="black",
-                                        fill="white")
-                s.addElement(element)
+                # element = sb.createRect(node.X - rect_width / 2 - 3, 
+                #                         node.Y + NODE_RADIUS - 2, 
+                #                         rect_width + 6, 
+                #                         h_step * len(_b_labels) + 2,
+                #                         strokewidth=1,
+                #                         stroke="black",
+                #                         fill="white")
+                # s.addElement(element)
 
                 for i in range(len(_b_labels)):
                     t = pysvg.text(unicode(_b_labels[i]), node.X - horizontal_offset,
-                            node.Y + NODE_RADIUS + h_step * (i + 0.8))
+                            node.Y + NODE_RADIUS + h_step * (i + 0.8) + 5)
                     t.set_style(font_style.getStyle())
-                    s.addElement(t)           
+                    s.addElement(t)          
                             
         s.save(path)
     
@@ -435,9 +478,23 @@ class MyCanvas(wx.ScrolledWindow):
         img = bmp.ConvertToImage()
         img.SaveFile(path, wx.BITMAP_TYPE_PNG)
         
+    def OnPrint(self, event):
+        printData = wx.PrintData()
+        printData.SetPaperId(wx.PAPER_LETTER)
+        printData.SetPrintMode(wx.PRINT_MODE_PRINTER)
+        pdd = wx.PrintDialogData(printData)
+        printer = wx.Printer(pdd)
+        printout = MyPrintout(self)
+
+        if not printer.Print(self.parent, printout, True):
+            wx.MessageBox("There was a problem printing.\nPerhaps your current printer is not set correctly?", "Printing", wx.OK)
+        else:
+            printData = wx.PrintData( printer.GetPrintDialogData().GetPrintData() )
+        printout.Destroy()
+        
 class DiagramWindow(wx.Panel):
     
-    def __init__(self, parent, id, filename):
+    def __init__(self, parent, id, filename, path):
         """docstring for __init__"""
         wx.Panel.__init__(self, parent, -1)
         self.canvas = MyCanvas(self, -1)
@@ -445,6 +502,8 @@ class DiagramWindow(wx.Panel):
         self.toolBar = self.CreateToolBar()
         self.toolBar.Realize()
         self.filename = filename
+        self.path = path
+        self.canvas.SetConceptSystem(uread_xml(path))
         
     def CreateToolBar(self):
         tb = wx.ToolBar(self)
@@ -476,6 +535,16 @@ class DiagramWindow(wx.Panel):
                                images.GetBitmap("Minus"),
                                shortHelp="Decrease font size")
         self.Bind(wx.EVT_TOOL, self.OnDecreaseFontSize, tool)
+        
+        tool = tb.AddLabelTool(wx.NewId(), "Print", 
+                               images.GetBitmap("Dummy"),
+                               shortHelp="Print")
+        self.Bind(wx.EVT_TOOL, self.canvas.OnPrint, tool)
+        
+        tool = tb.AddLabelTool(wx.NewId(), "Store coordinates", 
+                               images.GetBitmap("Dummy"),
+                               shortHelp="Store coordinates")
+        self.Bind(wx.EVT_TOOL, self.OnSaveXML, tool)
 
         return tb
         
@@ -511,6 +580,10 @@ class DiagramWindow(wx.Panel):
             else:
                 self.canvas.saveSVG(dlg.GetPath())
         dlg.Destroy()
+        
+    def OnSaveXML(self, event):
+        self.canvas.SaveCoordinates()
+        write_xml(self.path, self.canvas.cs)
         
         
 def find_own_objects(cs):
@@ -585,6 +658,51 @@ def get_coordinates(concept_system):
     os.unlink(temp_dot_path)
     
     return coordinates
+
+class MyPrintout(wx.Printout):
+    def __init__(self, canvas):
+        wx.Printout.__init__(self)
+        self.canvas = canvas
+
+    def OnPrintPage(self, page):
+        dc = self.GetDC()
+
+        #-------------------------------------------
+        # One possible method of setting scaling factors...
+
+        maxX = self.canvas.getWidth()
+        maxY = self.canvas.getHeight()
+
+        # Let's have at least 50 device units margin
+        marginX = 50
+        marginY = 50
+
+        # Add the margin to the graphic size
+        maxX = maxX + (2 * marginX)
+        maxY = maxY + (2 * marginY)
+
+        # Get the size of the DC in pixels
+        (w, h) = dc.GetSizeTuple()
+
+        # Calculate a suitable scaling factor
+        scaleX = float(w) / maxX
+        scaleY = float(h) / maxY
+
+        # Use x or y scaling factor, whichever fits on the DC
+        actualScale = min(scaleX, scaleY)
+
+        # Calculate the position on the DC for centering the graphic
+        posX = (w - (self.canvas.getWidth() * actualScale)) / 2.0
+        posY = (h - (self.canvas.getHeight() * actualScale)) / 2.0
+
+        # Set the scale and origin
+        dc.SetUserScale(actualScale, actualScale)
+        dc.SetDeviceOrigin(int(posX), int(posY))
+
+        #-------------------------------------------
+        self.canvas.DoDrawing(dc)
+
+        return True
           
 if __name__ == "__main__":
     app = wx.PySimpleApp()

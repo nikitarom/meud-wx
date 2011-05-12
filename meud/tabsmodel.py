@@ -85,8 +85,8 @@ class TabsModel(object):
                     elif what == "View diagram":
                         newtab = diagramview.DiagramWindow(self._tabs_view, 
                                                            wx.NewId(),
-                                                           filename=item.name)
-                        newtab.canvas.SetConceptSystem(uread_xml(item.path))
+                                                           filename=item.name,
+                                                           path=item.path)
                     elif what == "Table":
                         table = conceptsystemgrid.ConceptSystemTable(uread_xml(item.path))
                         newtab = conceptsystemgrid.ConceptSystemGrid(self._tabs_view)
