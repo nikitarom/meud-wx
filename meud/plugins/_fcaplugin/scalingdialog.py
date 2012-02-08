@@ -12,7 +12,7 @@ class ScalingDialog(wx.Dialog):
     
     def __init__(self, item, workspace):
         self._workspace = workspace
-        mvcontext = fca.read_mv_txt(item.path)
+        mvcontext = fca.readwrite.uread_mv_txt(item.path)
         
         wx.Dialog.__init__(self, None, -1, "Scaling")
         self.CenterOnScreen()
@@ -187,7 +187,7 @@ def GetScaledContext(item, workspace):
         while (os.path.exists(newpath)):
             newpath = default_path[:-4] + "-{0}".format(i) + newpath[-4:]
             i += 1
-        fca.write_cxt(context, newpath)
+        fca.uwrite_cxt(context, newpath)
         newpath = [newpath]
     else:
         newpath = []

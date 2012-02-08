@@ -175,6 +175,7 @@ class ContextTable(wx.grid.PyGridTableBase):
         if len(self.context.objects) == 0:
             self.context.add_attribute([], "New Attribute")
         else:
+            # TODO: CellEditor & Renderer
             self.context.add_attribute([self.init_value]*len(self.context), "New Attribute")
         
         msg = wx.grid.GridTableMessage(self,            # The table
@@ -182,6 +183,8 @@ class ContextTable(wx.grid.PyGridTableBase):
               1                                         # how many
               )
         self.GetView().ProcessTableMessage(msg)
+        self.GetView().SetCellEditor(0, len(self.context.attributes), wx.grid.GridCellAutoWrapStringEditor())
+        self.GetView().SetCellRenderer(0, len(self.context.attributes), wx.grid.GridCellAutoWrapStringRenderer())
         self.GetView().SetGridCursor(0, len(self.context.attributes))
         self.GetView().EnableCellEditControl()
         
@@ -190,6 +193,7 @@ class ContextTable(wx.grid.PyGridTableBase):
         if len(self.context.attributes) == 0:
             self.context.add_object([], "New Object")
         else:
+            # TODO: CellEditor & Renderer
             self.context.add_object([self.init_value]*len(self.context.attributes), "New Object")
         
         msg = wx.grid.GridTableMessage(self,            # The table
@@ -197,6 +201,8 @@ class ContextTable(wx.grid.PyGridTableBase):
               1                                         # how many
               )
         self.GetView().ProcessTableMessage(msg)
+        self.GetView().SetCellEditor(len(self.context), 0, wx.grid.GridCellAutoWrapStringEditor())
+        self.GetView().SetCellRenderer(len(self.context), 0, wx.grid.GridCellAutoWrapStringRenderer())
         self.GetView().SetGridCursor(len(self.context), 0)
         self.GetView().EnableCellEditControl()
         
@@ -242,7 +248,7 @@ class MVContextTable(ContextTable):
         path = item.path
         self._model = model
         wx.grid.PyGridTableBase.__init__(self)
-        self.context = fca.read_mv_txt(path)
+        self.context = fca.readwrite.uread_mv_txt(path)
         self.path = path
         
     def Save(self):
@@ -302,10 +308,21 @@ class ContextGrid(wx.Panel):
         self.grid.element = table.context
         self.grid.SetTable(table)
         
-        for row in range(len(table.context)):
-            for col in range(len(table.context[0])):
-                self.grid.SetCellRenderer(row+1, col+1, CrossRenderer())
-                self.grid.SetCellEditor(row+1, col+1, DummyCellEditor())
+        self.grid.SetDefaultRenderer(CrossRenderer())
+        self.grid.SetDefaultEditor(DummyCellEditor())
+
+        for row in xrange(len(table.context) + 1):
+            self.grid.SetCellEditor(row, 0, wx.grid.GridCellAutoWrapStringEditor())
+            self.grid.SetCellRenderer(row, 0, wx.grid.GridCellAutoWrapStringRenderer())
+        
+        if len(table.context) > 0:
+            col_number = len(table.context[0]) + 1
+        else:
+            col_number = 1
+
+        for col in xrange(col_number):
+            self.grid.SetCellEditor(0, col, wx.grid.GridCellAutoWrapStringEditor())
+            self.grid.SetCellRenderer(0, col, wx.grid.GridCellAutoWrapStringRenderer())
         
     def CreateToolBar(self):
         tb = wx.ToolBar(self)
@@ -344,19 +361,19 @@ class ContextGrid(wx.Panel):
     
     def OnAddRow(self, event):
         self.grid.GetTable().AppendRows()
-        context = self.grid.GetTable().context
-        row = len(context)
-        for col in range(len(context[0])):
-            self.grid.SetCellRenderer(row, col+1, CrossRenderer())
-            self.grid.SetCellEditor(row, col+1, DummyCellEditor())
+        # context = self.grid.GetTable().context
+        # row = len(context)
+        # for col in range(len(context[0])):
+        #     self.grid.SetCellRenderer(row, col+1, CrossRenderer())
+        #     self.grid.SetCellEditor(row, col+1, DummyCellEditor())
     
     def OnAddColumn(self, event):
         self.grid.GetTable().AppendCols()
-        context = self.grid.GetTable().context
-        col = len(context.attributes)
-        for row in range(len(context)):
-            self.grid.SetCellRenderer(row+1, col, CrossRenderer())
-            self.grid.SetCellEditor(row+1, col, DummyCellEditor())
+        # context = self.grid.GetTable().context
+        # col = len(context.attributes)
+        # for row in range(len(context)):
+        #     self.grid.SetCellRenderer(row+1, col, CrossRenderer())
+        #     self.grid.SetCellEditor(row+1, col, DummyCellEditor())
     
     def OnDeleteRow(self, event):
         self.grid.GetTable().DeleteRows()

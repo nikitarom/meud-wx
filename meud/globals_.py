@@ -17,4 +17,3 @@ if not workspace_path:
     dot_path = pth_file.readline().strip()
     
 plugins_path = r"meud/plugins"
-

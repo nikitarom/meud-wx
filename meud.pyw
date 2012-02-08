@@ -1,3 +1,5 @@
+#!arch -i386 python
+# encoding: utf-8
 '''
 Created on 17.02.2010
 
